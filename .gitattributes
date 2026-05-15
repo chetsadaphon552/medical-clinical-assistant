@@ -1,2 +1,1 @@
-data/vectordb/faiss_index/index.faiss filter=lfs diff=lfs merge=lfs -text
-data/vectordb/faiss_index/chunks.pkl filter=lfs diff=lfs merge=lfs -text
+
