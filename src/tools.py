@@ -33,14 +33,25 @@ def get_vectorstore():
         # Load model
         _model = SentenceTransformer(EMBEDDING_MODEL)
         
-        # Load FAISS index
-        _index = faiss.read_index(os.path.join(VECTOR_DB_PATH, 'index.faiss'))
-        
-        # Load chunks
-        with open(os.path.join(VECTOR_DB_PATH, 'chunks.pkl'), 'rb') as f:
-            _chunks = pickle.load(f)
-        
-        print("✅ Vector store loaded")
+        try:
+            print("📚 Loading vector store...")
+            
+            # Load model
+            _model = SentenceTransformer(EMBEDDING_MODEL)
+            
+            # Load FAISS index
+            _index = faiss.read_index(os.path.join(VECTOR_DB_PATH, 'index.faiss'))
+            
+            # Load chunks
+            with open(os.path.join(VECTOR_DB_PATH, 'chunks.pkl'), 'rb') as f:
+                _chunks = pickle.load(f)
+            
+            print("✅ Vector store loaded")
+        except Exception as e:
+            import traceback
+            print(f"❌ Error loading vector store: {e}")
+            print(traceback.format_exc())
+            raise e
     
     return _index, _chunks, _model
 
@@ -58,7 +69,6 @@ def search_symptoms(symptoms: str, k: int = 5) -> str:
     Returns:
         String with possible conditions and information
     """
-    print(f"🔍 [Tool] Searching for conditions matching: '{symptoms}'")
     
     index, chunks, model = get_vectorstore()
     
