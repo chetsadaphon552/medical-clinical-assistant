@@ -113,11 +113,11 @@ Output ONLY the tool name and its single most important argument in JSON format:
                 elif tool == 'none':
                     return 'none', None
                 else:
-                    return 'search_symptoms', {'query': arg}
-            return 'search_symptoms', {'query': user_input}
+                    return 'search_symptoms', {'symptoms': arg}
+            return 'search_symptoms', {'symptoms': user_input}
         except Exception as e:
             logger.error(f"Error selecting tool: {e}")
-            return 'search_symptoms', {'query': user_input}
+            return 'search_symptoms', {'symptoms': user_input}
 
     def query(self, user_input: str) -> str:
         """Process user query and return response."""
