@@ -84,8 +84,22 @@ with st.sidebar:
             with open("logs/agent.log", "w") as f: f.write("")
         st.rerun()
 
-# Header
-st.markdown("<h1 class='main-header'>🏥 Clinical Decision Support System</h1>", unsafe_allow_html=True)
+# --- Header Section ---
+st.title("🏥 Clinical Decision Assistant")
+st.markdown("ระบบสนับสนุนการตัดสินใจทางคลินิกอัจฉริยะ (Professional CDSS)")
+
+# --- DEBUG SECTION (ตรวจสอบไฟล์) ---
+if st.checkbox("🔍 ตรวจสอบความพร้อมของระบบ (Debug)"):
+    import os
+    st.write("Current Directory:", os.getcwd())
+    target_path = "data/vectordb/faiss_index"
+    if os.path.exists(target_path):
+        st.success(f"✅ โฟลเดอร์ {target_path} มีอยู่จริง")
+        st.write("รายชื่อไฟล์ในโฟลเดอร์:", os.listdir(target_path))
+    else:
+        st.error(f"❌ ไม่พบโฟลเดอร์ {target_path}")
+        # ลองหาดูว่ามีโฟลเดอร์ไหนใกล้เคียงไหม
+        st.write("รายชื่อโฟลเดอร์ทั้งหมด:", os.listdir("."))
 
 # Layout
 col_left, col_right = st.columns([1, 1.5], gap="large")
