@@ -117,7 +117,7 @@ def search_symptoms(symptoms: str, k: int = 5) -> str:
         # Format for LLM
         output += f"Condition: {condition_name}\n"
         output += f"Confidence Score: {score:.2f}\n"
-        output += f"Clinical Content: {chunk['content']}\n"
+        output += f"Clinical Content: {chunk['text']}\n"
         output += f"Source: {chunk['metadata'].get('source', 'Unknown')}\n\n"
 
         if result_count >= k:
