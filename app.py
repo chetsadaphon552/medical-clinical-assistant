@@ -88,29 +88,6 @@ with st.sidebar:
 st.title("🏥 Clinical Decision Assistant")
 st.markdown("ระบบสนับสนุนการตัดสินใจทางคลินิกอัจฉริยะ (Professional CDSS)")
 
-# --- DEBUG SECTION (ตรวจสอบไฟล์) ---
-if st.checkbox("🔍 ตรวจสอบความพร้อมของระบบ (Debug)"):
-    import os
-    st.write("Current Directory:", os.getcwd())
-    target_path = "data/vectordb/vector_store"
-    if os.path.exists(target_path):
-        st.success(f"✅ โฟลเดอร์ {target_path} มีอยู่จริง")
-        st.write("รายชื่อไฟล์:", os.listdir(target_path))
-    else:
-        st.error(f"❌ ไม่พบโฟลเดอร์ {target_path}")
-        # แสดงทุกอย่างที่อยู่ใน data/
-        if os.path.exists("data"):
-            st.write("📂 เนื้อหาภายใน data/:")
-            for root, dirs, files in os.walk("data"):
-                for f in files:
-                    full = os.path.join(root, f)
-                    st.write(f"  {full} ({os.path.getsize(full)} bytes)")
-                if not files and not dirs:
-                    st.write(f"  {root}/ (ว่างเปล่า)")
-        else:
-            st.error("❌ ไม่พบโฟลเดอร์ data/ เลย")
-            st.write("รายชื่อทั้งหมด:", os.listdir("."))
-
 # Layout
 col_left, col_right = st.columns([1, 1.5], gap="large")
 
