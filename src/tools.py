@@ -79,8 +79,16 @@ def search_symptoms(symptoms: str, k: int = 5) -> str:
     
     seen_conditions = set()
     result_count = 0
+    RELEVANCE_THRESHOLD = 0.60  # Balanced threshold to prevent noise
     
     for idx, similarity in zip(indices[0], similarities[0]):
+        # Cosine similarity is already 0-1 range (higher is better)
+        score = float(similarity)
+        
+        # Guardrail: If the match is too weak, ignore it
+        if score < RELEVANCE_THRESHOLD:
+            continue
+            
         chunk = chunks[idx]
         condition_name = chunk['metadata']['condition']
         
@@ -94,9 +102,6 @@ def search_symptoms(symptoms: str, k: int = 5) -> str:
         
         seen_conditions.add(condition_name)
         result_count += 1
-        
-        # Cosine similarity is already 0-1 range (higher is better)
-        score = float(similarity)
         
         output += f"{result_count}. {condition_name}\n"
         output += f"   Category: {chunk['metadata']['category']}\n"
@@ -114,7 +119,11 @@ def search_symptoms(symptoms: str, k: int = 5) -> str:
         
         output += "\n"
     
-    print(f"✅ [Tool] Found {result_count} unique conditions")
+    if result_count == 0:
+        print(f"⚠️ [Tool] No conditions met the relevance threshold ({RELEVANCE_THRESHOLD})")
+        return "No relevant clinical conditions found matching these symptoms in the database. The query may be non-clinical or outside the system's knowledge base."
+
+    print(f"✅ [Tool] Found {result_count} relevant unique conditions")
     return output
 
 

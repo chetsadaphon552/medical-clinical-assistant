@@ -37,48 +37,55 @@ class MedicalSymptomAssistant:
             api_key=QWEN_API_KEY,
             base_url="https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
             model=QWEN_MODEL,
-            temperature=0.1,
+            temperature=0.01,  # Strict adherence to instructions
             max_tokens=1000,   # Increased to prevent Thai character truncation
         )
         
-        self.system_message = SystemMessage(content="""You are a Clinical Decision Support Assistant designed to assist healthcare professionals in formulating a differential diagnosis.
-        
-CRITICAL RULES:
-1. You provide CLINICAL DECISION SUPPORT, not a final diagnosis.
-2. The final clinical judgment always belongs to the human physician.
-3. Use clinical terminology (e.g., "Differential Diagnosis (DDx)", "Clinical manifestations", "Pathophysiology").
-4. Present evidence from the database (symptoms) clearly to support possible conditions.
-5. In Thai responses, use professional medical terminology (e.g., "วินิจฉัยแยกโรค (Differential Diagnosis)", "ข้อพิจารณาทางคลินิก").
-6. RESPOND IN THE SAME LANGUAGE as the query:
-   - If queried in Thai, respond in Thai ONLY.
-   - If queried in English, respond in English ONLY.
-7. Be objective, factual, and analytical.
+        self.system_message = SystemMessage(content="""คุณคือ "Clinical Decision Support Assistant" ผู้ช่วยอัจฉริยะที่ออกแบบมาเพื่อสนับสนุนบุคลากรทางการแพทย์ในการวินิจฉัยแยกโรค (Differential Diagnosis - DDx) โดยใช้ฐานข้อมูลทางคลินิกอ้างอิง
 
-Common disease translations (English → Thai):
-- common cold → ไข้หวัด
-- allergy → ภูมิแพ้
-- migraine → ไมเกรน
-- pneumonia → ปอดอักเสบ
-- bronchial asthma → หอบหืด
-- chicken pox → อีสุกอีใส
-- dengue → ไข้เลือดออก
-- malaria → มาลาเรีย
-- typhoid → ไทฟอยด์
-- diabetes → เบาหวาน
-- hypertension → ความดันโลหิตสูง
-- arthritis → ข้ออักเสบ
-- psoriasis → โรคสะเก็ดเงิน
-- fungal infection → เชื้อรา
-- impetigo → ฝีหนองติดต่อ
-- jaundice → ดีซ่าน
-- gastroesophageal reflux disease → กรดไหลย้อน
-- peptic ulcer disease → แผลในกระเพาะ
-- urinary tract infection → กระเพาะปัสสาวะอักเสบ
-- drug reaction → แพ้ยา
-- varicose veins → เส้นเลือดขอด
-- cervical spondylosis → ปวดคอจากกระดูกเสื่อม
+แนวทางปฏิบัติในการตอบคำถาม (Operational Protocols):
 
-You assist physicians by retrieving relevant clinical data and suggesting possibilities based on patient presentation.""")
+1. แหล่งข้อมูล (Data Grounding): 
+   - คุณต้องวิเคราะห์และตอบคำถามโดยใช้ข้อมูลจาก "เครื่องมือค้นหา (RAG)" เท่านั้น 
+   - ห้ามแต่งเติมหรือใช้ความรู้ภายนอกที่ไม่ปรากฏในข้อมูลที่ดึงมา (No Hallucination)
+   - หากข้อมูลที่ดึงมาไม่สอดคล้องกับอาการของผู้ป่วย ให้ระบุว่า "ไม่พบรูปแบบอาการที่ตรงกับฐานข้อมูลทางคลินิก"
+
+2. การจัดการคำถามที่ไม่เกี่ยวข้อง (Out-of-Scope Handling):
+   - หากคำถามไม่เกี่ยวกับการเจ็บป่วยหรือสุขภาพ (เช่น เรื่องทั่วไป, การ์ตูน, สภาพอากาศ) ให้ตอบว่า: "ขออภัยครับ ผมได้รับการออกแบบมาเพื่อทำหน้าที่เป็นผู้ช่วยสนับสนุนการตัดสินใจทางคลินิกเท่านั้น จึงไม่สามารถให้ข้อมูลในหัวข้ออื่นได้ กรุณาระบุอาการทางคลินิกที่ต้องการวิเคราะห์ครับ"
+
+3. โครงสร้างรายงานที่ต้องทำตามเป๊ะๆ (Strict Formatting Rules):
+   - ทุกอันดับโรคต้อง "ขึ้นบรรทัดใหม่" เสมอ
+   - ใช้หัวข้อ Markdown (###) ตามที่กำหนด
+   - ห้ามใช้ภาษาอื่นนอกจากไทยและอังกฤษ (ห้ามมีภาษาจีน หรือเวียดนาม เช่น xét nghiệm เด็ดขาด)
+   - ใช้ Bullet points (-) ในส่วนของข้อพิจารณาเพิ่มเติม
+
+Template ตัวอย่าง (Strict Structure):
+
+   ### 📊 รายชื่อโรคที่เป็นไปได้ (Possible Conditions)
+
+   | ลำดับ | รายชื่อโรค | คะแนนความมั่นใจ |
+   | :--- | :--- | :--- |
+   | 1 | [ชื่อโรคภาษาไทย (English Name)] | [0.xx] |
+   | 2 | [ชื่อโรคภาษาไทย (English Name)] | [0.xx] |
+
+   ### 🧠 บทวิเคราะห์ทางคลินิก (Clinical Analysis)
+   [บทวิเคราะห์โดยละเอียดที่เชื่อมโยงกับอาการของผู้ป่วย]
+
+   ### ⚠️ ข้อพิจารณาเพิ่มเติม (Additional Considerations)
+   - **ปัจจัยเสี่ยง:** [รายละเอียด]
+   - **การสืบค้นแนะนำ:** [รายละเอียด]
+
+   ---
+   *คำเตือน: ข้อมูลนี้ใช้เพื่อประกอบการตัดสินใจทางคลินิกเท่านั้น การวินิจฉัยขั้นสุดท้ายขึ้นอยู่กับดุลยพินิจของแพทย์ผู้ตรวจ*
+
+4. ภาษาและสำนวน (Language Rules - STRICT):
+   - **ห้ามมีคำภาษาอังกฤษปนในบทวิเคราะห์เด็ดขาด** (ยกเว้นชื่อโรคในวงเล็บ): เช่น ห้ามเขียนว่า "รู้สึก sore throat" ให้แปลเป็น "เจ็บคอ" ทันที
+   - **แปลหลักฐานทุกอย่างจาก RAG เป็นภาษาไทย**: ข้อมูลที่ดึงมาเป็นภาษาอังกฤษ คุณต้องแปลเป็นภาษาไทยที่อ่านง่ายและลื่นไหล 100%
+   - **ตารางต้องเป๊ะ**: ต้องใช้เครื่องหมาย `|` และ `-` ให้ครบตามรูปแบบ Markdown Table เพื่อให้ระบบแสดงผลเป็นตารางจริงๆ
+
+   *พจนานุกรมช่วยแปล:*
+   - sore throat -> เจ็บคอ, coughing a lot -> ไอมาก, chills -> หนาวสั่น, run down/weak -> อ่อนเพลีย, fever -> มีไข้, chest tightness -> แน่นหน้าอก, always tired -> เหนื่อยตลอดเวลา
+""")
         logger.info(f"✅ LLM initialized: {QWEN_MODEL} via API")
         
         # Available tools
@@ -91,27 +98,44 @@ You assist physicians by retrieving relevant clinical data and suggesting possib
         logger.info(f"✅ Loaded {len(self.tools)} tools")
     
     def _select_tool(self, user_input: str) -> tuple:
-        """Select appropriate tool based on user input."""
-        query_lower = user_input.lower()
+        """Select appropriate tool based on user input using LLM reasoning."""
         
-        # Check for specific condition details request
-        if any(word in query_lower for word in ['what is', 'tell me about', 'explain', 'details about', 'information on']):
-            # Extract condition name (simple heuristic)
-            words = user_input.split()
-            for i, word in enumerate(words):
-                if word.lower() in ['cold', 'flu', 'influenza', 'migraine', 'asthma', 'bronchitis', 'diabetes', 'malaria']:
-                    return 'get_condition_details', {'condition_name': word}
-        
-        # Check for warning signs query
-        if any(word in query_lower for word in ['warning', 'danger', 'emergency', 'when to see doctor', 'red flag']):
-            # Try to extract condition name
-            for word in ['cold', 'flu', 'fever', 'headache', 'cough', 'diabetes', 'asthma']:
-                if word in query_lower:
-                    return 'get_warning_signs', {'condition_name': word}
-        
-        # Default: ALWAYS use search_symptoms for symptom queries
-        # This ensures we get top k results with confidence scores
-        return 'search_symptoms', {'symptoms': user_input, 'k': 5}
+        prompt = f"""Analyze the user query and select the best medical tool.
+If the query is NOT RELATED to medical symptoms, health conditions, or clinical advice, select 'none'.
+
+User Query: {user_input}
+
+Available Tools:
+1. 'search_symptoms': For searching possible conditions based on symptoms.
+2. 'get_condition_details': For detailed information about a specific known condition.
+3. 'get_warning_signs': For warning signs or emergency indicators of a condition.
+4. 'none': Use this ONLY if the query is unrelated to medicine or health.
+
+Output ONLY the tool name and its single most important argument in JSON format:
+{{"tool": "tool_name", "argument": "value"}}
+"""
+        try:
+            response = self.llm.invoke([HumanMessage(content=prompt)])
+            import json
+            import re
+            
+            # Extract JSON from response
+            match = re.search(r'\{.*\}', response.content)
+            if match:
+                data = json.loads(match.group())
+                tool = data.get('tool', 'search_symptoms')
+                arg = data.get('argument', user_input)
+                
+                if tool == 'get_condition_details':
+                    return 'get_condition_details', {'condition_name': arg}
+                elif tool == 'get_warning_signs':
+                    return 'get_warning_signs', {'condition_name': arg}
+                elif tool == 'none':
+                    return 'none', {}
+            
+            return 'search_symptoms', {'symptoms': user_input, 'k': 5}
+        except:
+            return 'search_symptoms', {'symptoms': user_input, 'k': 5}
     
     def _translate_to_english(self, thai_text: str) -> str:
         """Translate Thai symptoms to English for better RAG search."""
@@ -149,6 +173,8 @@ You assist physicians by retrieving relevant clinical data and suggesting possib
             'ผิวหนัง': 'skin',
             'คอแห้ง': 'dry throat',
             'เสมหะ': 'phlegm',
+            'หนาว': 'chills',
+            'สั่น': 'shivering',
             'เลือดออก': 'bleeding',
             
             # Severity
@@ -233,6 +259,10 @@ English translation:"""
             
             tool_name, tool_input = self._select_tool(user_input)
             
+            if tool_name == 'none':
+                logger.info("🚫 Query identified as non-clinical.")
+                return "ขออภัยครับ ระบบนี้เป็นระบบสนับสนุนการตัดสินใจทางคลินิก (Clinical CDS) ซึ่งออกแบบมาเพื่อวิเคราะห์อาการเจ็บป่วยและข้อมูลทางการแพทย์เท่านั้น กรุณาระบุอาการแสดงของผู้ป่วยเพื่อเริ่มการวิเคราะห์ครับ"
+
             logger.info(f"🔧 Selected tool: {tool_name}")
             logger.info(f"📥 Tool input: {tool_input}")
             
@@ -250,35 +280,41 @@ English translation:"""
             
             # Use original input language for response
             if is_thai:
-                prompt = f"""คุณเป็นผู้ช่วยแพทย์ (Clinical Decision Support) ให้ข้อมูลเพื่อประกอบการวินิจฉัยแยกโรค ตอบเป็นภาษาไทยเท่านั้น
+                prompt = f"""คุณคือผู้ช่วยตัดสินใจทางคลินิก (Clinical Decision Support Assistant)
+อาการของผู้ป่วย: "{original_input}"
 
-อาการที่พบ (Presentation): "{original_input}"
-
-ข้อมูลจากฐานข้อมูลทางคลินิก (เรียงตามคะแนนความมั่นใจแล้ว):
+ข้อมูลอ้างอิงจากฐานข้อมูล:
 {tool_result}
 
-คำสั่ง: วิเคราะห์ข้อมูลข้างต้นและนำเสนอในรูปแบบการวินิจฉัยแยกโรค (Differential Diagnosis) สำหรับบุคลากรทางการแพทย์ โดยใช้ข้อมูลจาก 'ข้อมูลจากฐานข้อมูลทางคลินิก' มาเติมลงในโครงสร้างด้านล่าง
+คำสั่ง: วิเคราะห์ข้อมูลและสร้างรายงานตามรูปแบบที่กำหนด (ภาษาไทย 100%)
+**กฎเหล็ก: แสดงเพียง 3 อันดับแรกและเรียงตามคะแนนความมั่นใจจากมากไปน้อย**
 
-ข้อกำหนดสำคัญ:
-1. ต้องเรียงลำดับโรคตาม Confidence Score จากมากไปน้อย (อันดับ 1 ต้องมีคะแนนสูงสุด)
-2. ห้ามระบุโรคซ้ำกันในรายการ
-3. แปลชื่อโรคเป็นภาษาไทยและระบุภาษาอังกฤษกำกับ
-4. ห้ามแต่งโรคขึ้นมาเอง ให้ใช้เฉพาะโรคที่ปรากฎในฐานข้อมูลเท่านั้น
+### 📊 รายชื่อโรคที่เป็นไปได้ (Possible Conditions - Top 3)
+| ลำดับ | รายชื่อโรค | คะแนนความมั่นใจ |
+| :--- | :--- | :--- |
+| 1 | [ชื่อไทย (English Name)] | [0.xx] |
+| 2 | [ชื่อไทย (English Name)] | [0.xx] |
+| 3 | [ชื่อไทย (English Name)] | [0.xx] |
 
-โครงสร้างรายงานที่ต้องการ:
-1. การวินิจฉัยแยกโรค (Differential Diagnosis - DDx) ที่เกี่ยวข้อง (แสดง 1-3 อันดับตามที่พบจริง):
-   - (ชื่อโรคภาษาไทยและอังกฤษ) [Confidence Score: X.XX]
-   (หมายเหตุ: ให้ดึงข้อมูลจากฐานข้อมูลเท่านั้น ห้ามแต่งชื่อโรคหรือคะแนนขึ้นมาเอง หากในฐานข้อมูลมีน้อยกว่า 3 โรค ให้แสดงเท่าที่มี หากไม่มีโรคที่เกี่ยวข้องเลยให้แจ้งว่าไม่พบข้อมูล)
+### 🧠 บทวิเคราะห์ทางคลินิก (Clinical Analysis)
+(วิเคราะห์อาการโดยแปลเป็นไทย 100% ห้ามมีภาษาอังกฤษปนในประโยค)
 
-2. บทวิเคราะห์ทางคลินิก (Clinical Analysis): (วิเคราะห์ว่าอาการที่พบสนับสนุนโรคอันดับ 1 อย่างไร และมีความเกี่ยวข้องกับอันดับ 2 และ 3 อย่างไร)
+### ⚠️ ข้อพิจารณาเพิ่มเติม (Additional Considerations)
+- **ปัจจัยเสี่ยง:** [รายละเอียด]
+- **การสืบค้นแนะนำ:** [รายละเอียด]
 
-3. ข้อพิจารณาเพิ่มเติม (Clinical Considerations):
-   - [ระบุปัจจัยเสี่ยงหรือภาวะแทรกซ้อนที่ต้องเฝ้าระวัง]
-   - [การตรวจทางห้องปฏิบัติการหรือการสืบค้นเพิ่มเติมที่แนะนำ]
+---
+**พจนานุกรมแปลโรคที่ต้องใช้ห้ามเพี้ยน:**
+- Pneumonia -> ปอดอักเสบ
+- Common Cold -> หวัดทั่วไป
+- Dengue -> ไข้เลือดออก
+- Influenza -> ไข้หวัดใหญ่
+- Bronchial Asthma -> หอบหืด
+- Allergy -> ภูมิแพ้
+- Typhoid -> ไทฟอยด์
+- Malaria -> มาลาเรีย
 
-4. คำเตือน: "ข้อมูลนี้ใช้เพื่อประกอบการตัดสินใจทางคลินิกเท่านั้น การวินิจฉัยขั้นสุดท้ายขึ้นอยู่กับดุลยพินิจของแพทย์ผู้ตรวจ"
-
-คำตอบ:"""
+คำตอบ (ภาษาไทย 100%):"""
             else:
                 prompt = f"""You are a Clinical Decision Support Assistant. Respond in English only.
 
