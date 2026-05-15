@@ -79,53 +79,49 @@ def search_symptoms(symptoms: str, k: int = 5) -> str:
     query_embedding = model.encode([expanded_query])[0]
     query_embedding = query_embedding / np.linalg.norm(query_embedding)  # Normalize
     
-    # Search with k*2 to get more candidates, then filter to top k unique
+    # Search with k*3 to get enough candidates for unique filtering
     similarities, indices = index.search(np.array([query_embedding]).astype('float32'), k * 3)
     
     if len(indices[0]) == 0:
         return "No matching conditions found for the described symptoms."
     
-    output = f"Found {len(indices[0])} possible conditions:\n\n"
+    # Pre-collect and sort results by score descending
+    results = []
+    for idx, similarity in zip(indices[0], similarities[0]):
+        results.append({'idx': idx, 'score': float(similarity)})
     
+    # Sort by score descending (highest similarity first)
+    results = sorted(results, key=lambda x: x['score'], reverse=True)
+    
+    output = ""
     seen_conditions = set()
     result_count = 0
-    RELEVANCE_THRESHOLD = 0.60  # Balanced threshold to prevent noise
+    RELEVANCE_THRESHOLD = 0.60
     
-    for idx, similarity in zip(indices[0], similarities[0]):
-        # Cosine similarity is already 0-1 range (higher is better)
-        score = float(similarity)
+    for item in results:
+        idx = item['idx']
+        score = item['score']
         
-        # Guardrail: If the match is too weak, ignore it
         if score < RELEVANCE_THRESHOLD:
             continue
             
         chunk = chunks[idx]
         condition_name = chunk['metadata']['condition']
         
-        # Avoid duplicate conditions
         if condition_name in seen_conditions:
             continue
-        
-        # Stop when we have k unique conditions
-        if result_count >= k:
-            break
         
         seen_conditions.add(condition_name)
         result_count += 1
         
-        output += f"{result_count}. {condition_name}\n"
-        output += f"   Category: {chunk['metadata']['category']}\n"
-        output += f"   Severity: {chunk['metadata']['severity']}\n"
-        output += f"   Match Score: {score:.2f}\n"
-        output += f"   Information:\n"
-        
-        # Show only most relevant lines (shorter = faster)
-        chunk_lines = chunk['text'].split('\n')
-        shown_lines = 0
-        for line in chunk_lines:
-            if line.strip() and shown_lines < 5:  # Show only 5 lines
-                output += f"   {line[:150]}\n"  # Truncate long lines
-                shown_lines += 1
+        # Format for LLM
+        output += f"Condition: {condition_name}\n"
+        output += f"Confidence Score: {score:.2f}\n"
+        output += f"Clinical Content: {chunk['content']}\n"
+        output += f"Source: {chunk['metadata'].get('source', 'Unknown')}\n\n"
+
+        if result_count >= k:
+            break
         
         output += "\n"
     
