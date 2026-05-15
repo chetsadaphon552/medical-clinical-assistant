@@ -1,0 +1,11 @@
+# ไม่เอา data/vectordb เพราะให้ระบบสร้างใหม่ได้ หรือถ้ามีปัญหาเรื่อง permission
+__pycache__/
+*.pyc
+logs/*.log
+.env
+.git/
+.vscode/
+.idea/
+venv/
+env/
+data/vectordb/

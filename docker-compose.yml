@@ -1,0 +1,30 @@
+services:
+  app:
+    build: .
+    container_name: medical-assistant-cli
+    env_file:
+      - .env
+    environment:
+      - PYTHONIOENCODING=utf-8
+      - LANG=C.UTF-8
+      - PYTHONUTF8=1
+    volumes:
+      - ./logs:/app/logs
+      - ./data/vectordb:/app/data/vectordb
+    stdin_open: true
+    tty: true
+
+  web:
+    build: .
+    container_name: medical-assistant-web
+    command: streamlit run app.py --server.address 0.0.0.0
+    env_file:
+      - .env
+    environment:
+      - PYTHONIOENCODING=utf-8
+    volumes:
+      - ./logs:/app/logs
+      - ./data/vectordb:/app/data/vectordb
+    ports:
+      - "8501:8501"
+

@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# Environment (CRITICAL: DO NOT REMOVE)
+.env
+.env.local
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Vector DB
+# data/vectordb/faiss_index/  <-- Keep this commented so the DB is uploaded and works immediately
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Streamlit
+.streamlit/
+static/
+
+# OS
+.DS_Store
+Thumbs.db

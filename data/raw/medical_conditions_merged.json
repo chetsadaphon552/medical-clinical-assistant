@@ -1,0 +1,1557 @@
+[
+  {
+    "condition": "Common Cold",
+    "category": "Respiratory",
+    "symptoms": [
+      "runny nose",
+      "sneezing",
+      "sore throat",
+      "cough",
+      "mild fever",
+      "headache",
+      "fatigue"
+    ],
+    "severity": "mild",
+    "description": "A viral infection of the upper respiratory tract. Usually resolves on its own within 7-10 days.",
+    "basic_advice": [
+      "Get plenty of rest",
+      "Drink lots of fluids (water, warm tea)",
+      "Use saline nasal drops",
+      "Gargle with warm salt water for sore throat"
+    ],
+    "warning_signs": [
+      "Fever above 38.5°C (101.3°F) lasting more than 3 days",
+      "Difficulty breathing",
+      "Severe headache or facial pain",
+      "Symptoms lasting more than 10 days"
+    ]
+  },
+  {
+    "condition": "Influenza (Flu)",
+    "category": "Respiratory",
+    "symptoms": [
+      "high fever",
+      "body aches",
+      "fatigue",
+      "dry cough",
+      "headache",
+      "chills",
+      "sore throat"
+    ],
+    "severity": "moderate",
+    "description": "A viral infection that attacks the respiratory system. More severe than common cold.",
+    "basic_advice": [
+      "Rest in bed",
+      "Drink plenty of fluids",
+      "Take fever reducers if needed",
+      "Avoid contact with others to prevent spread"
+    ],
+    "warning_signs": [
+      "Difficulty breathing or shortness of breath",
+      "Chest pain or pressure",
+      "Sudden dizziness or confusion",
+      "Severe or persistent vomiting",
+      "Fever above 39°C (102.2°F)"
+    ]
+  },
+  {
+    "condition": "Allergic Rhinitis",
+    "category": "Allergic",
+    "symptoms": [
+      "sneezing",
+      "runny nose",
+      "itchy eyes",
+      "nasal congestion",
+      "watery eyes",
+      "itchy throat"
+    ],
+    "severity": "mild",
+    "description": "An allergic response to airborne substances like pollen, dust, or pet dander.",
+    "basic_advice": [
+      "Avoid known allergens",
+      "Keep windows closed during high pollen seasons",
+      "Use air purifiers",
+      "Wash hands and face after being outdoors"
+    ],
+    "warning_signs": [
+      "Difficulty breathing",
+      "Wheezing",
+      "Symptoms interfering with daily activities",
+      "Symptoms not improving with over-the-counter medications"
+    ]
+  },
+  {
+    "condition": "Gastroenteritis (Stomach Flu)",
+    "category": "Gastrointestinal",
+    "symptoms": [
+      "diarrhea",
+      "nausea",
+      "vomiting",
+      "stomach cramps",
+      "mild fever",
+      "loss of appetite"
+    ],
+    "severity": "moderate",
+    "description": "Inflammation of the stomach and intestines, usually caused by viral or bacterial infection.",
+    "basic_advice": [
+      "Stay hydrated with small sips of water or oral rehydration solution",
+      "Eat bland foods (rice, bananas, toast) when able",
+      "Rest",
+      "Wash hands frequently to prevent spread"
+    ],
+    "warning_signs": [
+      "Signs of severe dehydration (dark urine, dizziness, dry mouth)",
+      "Blood in vomit or stool",
+      "High fever above 39°C (102.2°F)",
+      "Severe abdominal pain",
+      "Symptoms lasting more than 3 days"
+    ]
+  },
+  {
+    "condition": "Migraine",
+    "category": "Neurological",
+    "symptoms": [
+      "severe headache",
+      "nausea",
+      "sensitivity to light",
+      "sensitivity to sound",
+      "visual disturbances",
+      "throbbing pain"
+    ],
+    "severity": "moderate",
+    "description": "A neurological condition characterized by intense, debilitating headaches.",
+    "basic_advice": [
+      "Rest in a quiet, dark room",
+      "Apply cold compress to forehead",
+      "Stay hydrated",
+      "Avoid triggers (stress, certain foods, bright lights)"
+    ],
+    "warning_signs": [
+      "Sudden, severe headache (worst headache of your life)",
+      "Headache with fever, stiff neck, confusion",
+      "Headache after head injury",
+      "Weakness, numbness, or difficulty speaking"
+    ]
+  },
+  {
+    "condition": "Tension Headache",
+    "category": "Neurological",
+    "symptoms": [
+      "dull headache",
+      "pressure around forehead",
+      "tenderness in scalp",
+      "neck pain",
+      "shoulder pain"
+    ],
+    "severity": "mild",
+    "description": "The most common type of headache, often caused by stress or muscle tension.",
+    "basic_advice": [
+      "Practice relaxation techniques",
+      "Apply warm compress to neck and shoulders",
+      "Maintain good posture",
+      "Take breaks from screen time"
+    ],
+    "warning_signs": [
+      "Sudden change in headache pattern",
+      "Headache with fever or stiff neck",
+      "Headache after head injury",
+      "Headaches becoming more frequent or severe"
+    ]
+  },
+  {
+    "condition": "Urinary Tract Infection (UTI)",
+    "category": "Urinary",
+    "symptoms": [
+      "burning sensation when urinating",
+      "frequent urination",
+      "cloudy urine",
+      "strong-smelling urine",
+      "pelvic pain",
+      "lower abdominal pain"
+    ],
+    "severity": "moderate",
+    "description": "An infection in any part of the urinary system, most commonly the bladder.",
+    "basic_advice": [
+      "Drink plenty of water",
+      "Urinate frequently",
+      "Avoid irritants (caffeine, alcohol, spicy foods)",
+      "Wipe front to back (for women)"
+    ],
+    "warning_signs": [
+      "Fever above 38°C (100.4°F)",
+      "Back or side pain (may indicate kidney infection)",
+      "Blood in urine",
+      "Nausea or vomiting",
+      "Symptoms not improving after 2 days"
+    ]
+  },
+  {
+    "condition": "Sinusitis",
+    "category": "Respiratory",
+    "symptoms": [
+      "facial pain",
+      "nasal congestion",
+      "thick nasal discharge",
+      "reduced sense of smell",
+      "headache",
+      "tooth pain",
+      "cough"
+    ],
+    "severity": "moderate",
+    "description": "Inflammation of the sinuses, often following a cold or allergic reaction.",
+    "basic_advice": [
+      "Use saline nasal irrigation",
+      "Apply warm compress to face",
+      "Stay hydrated",
+      "Use a humidifier",
+      "Get adequate rest"
+    ],
+    "warning_signs": [
+      "Severe headache or facial pain",
+      "Swelling around eyes",
+      "High fever",
+      "Vision changes",
+      "Symptoms lasting more than 10 days without improvement"
+    ]
+  },
+  {
+    "condition": "Bronchitis",
+    "category": "Respiratory",
+    "symptoms": [
+      "persistent cough",
+      "mucus production",
+      "fatigue",
+      "shortness of breath",
+      "chest discomfort",
+      "mild fever"
+    ],
+    "severity": "moderate",
+    "description": "Inflammation of the bronchial tubes, often following a cold or respiratory infection.",
+    "basic_advice": [
+      "Get plenty of rest",
+      "Drink warm fluids",
+      "Use a humidifier",
+      "Avoid smoke and irritants",
+      "Practice deep breathing exercises"
+    ],
+    "warning_signs": [
+      "Cough lasting more than 3 weeks",
+      "Coughing up blood",
+      "High fever above 38.5°C (101.3°F)",
+      "Difficulty breathing or wheezing",
+      "Chest pain"
+    ]
+  },
+  {
+    "condition": "Food Poisoning",
+    "category": "Gastrointestinal",
+    "symptoms": [
+      "nausea",
+      "vomiting",
+      "diarrhea",
+      "stomach cramps",
+      "fever",
+      "weakness"
+    ],
+    "severity": "moderate",
+    "description": "Illness caused by consuming contaminated food or beverages.",
+    "basic_advice": [
+      "Stay hydrated with small sips of water",
+      "Rest",
+      "Avoid solid foods until vomiting stops",
+      "Gradually reintroduce bland foods",
+      "Wash hands frequently"
+    ],
+    "warning_signs": [
+      "Signs of severe dehydration",
+      "Blood in vomit or stool",
+      "High fever above 38.5°C (101.3°F)",
+      "Diarrhea lasting more than 3 days",
+      "Severe abdominal pain"
+    ]
+  },
+  {
+    "condition": "Conjunctivitis (Pink Eye)",
+    "category": "Eye",
+    "symptoms": [
+      "red eyes",
+      "itchy eyes",
+      "watery eyes",
+      "discharge from eyes",
+      "crusty eyelids",
+      "sensitivity to light"
+    ],
+    "severity": "mild",
+    "description": "Inflammation of the conjunctiva, the thin membrane covering the white part of the eye.",
+    "basic_advice": [
+      "Apply warm or cool compress to eyes",
+      "Avoid touching or rubbing eyes",
+      "Wash hands frequently",
+      "Avoid sharing towels or pillows",
+      "Clean discharge with clean cotton ball"
+    ],
+    "warning_signs": [
+      "Severe eye pain",
+      "Vision changes or blurred vision",
+      "Sensitivity to light",
+      "Symptoms not improving after 2-3 days",
+      "Green or yellow discharge (may indicate bacterial infection)"
+    ]
+  },
+  {
+    "condition": "Strep Throat",
+    "category": "Respiratory",
+    "symptoms": [
+      "severe sore throat",
+      "pain when swallowing",
+      "fever",
+      "red and swollen tonsils",
+      "white patches on throat",
+      "swollen lymph nodes"
+    ],
+    "severity": "moderate",
+    "description": "A bacterial infection of the throat and tonsils caused by Streptococcus bacteria.",
+    "basic_advice": [
+      "Gargle with warm salt water",
+      "Drink warm liquids",
+      "Rest",
+      "Use throat lozenges",
+      "Avoid irritants (smoke, strong odors)"
+    ],
+    "warning_signs": [
+      "Difficulty breathing or swallowing",
+      "Drooling (inability to swallow saliva)",
+      "High fever above 38.5°C (101.3°F)",
+      "Rash",
+      "Symptoms not improving after 48 hours"
+    ]
+  },
+  {
+    "condition": "Dehydration",
+    "category": "General",
+    "symptoms": [
+      "thirst",
+      "dry mouth",
+      "dark urine",
+      "fatigue",
+      "dizziness",
+      "decreased urination",
+      "dry skin"
+    ],
+    "severity": "moderate",
+    "description": "A condition that occurs when the body loses more fluids than it takes in.",
+    "basic_advice": [
+      "Drink water or oral rehydration solution",
+      "Sip fluids slowly if nauseous",
+      "Avoid caffeine and alcohol",
+      "Rest in a cool place",
+      "Eat water-rich foods (fruits, vegetables)"
+    ],
+    "warning_signs": [
+      "Severe dizziness or confusion",
+      "Rapid heartbeat",
+      "Rapid breathing",
+      "No urination for 8+ hours",
+      "Sunken eyes or extreme thirst"
+    ]
+  },
+  {
+    "condition": "Heat Exhaustion",
+    "category": "Environmental",
+    "symptoms": [
+      "heavy sweating",
+      "weakness",
+      "dizziness",
+      "nausea",
+      "headache",
+      "muscle cramps",
+      "cool and moist skin"
+    ],
+    "severity": "moderate",
+    "description": "A heat-related illness that can occur after prolonged exposure to high temperatures.",
+    "basic_advice": [
+      "Move to a cool, shaded area",
+      "Drink cool water or sports drinks",
+      "Remove excess clothing",
+      "Apply cool, wet cloths to skin",
+      "Rest"
+    ],
+    "warning_signs": [
+      "Body temperature above 40°C (104°F)",
+      "Confusion or altered mental state",
+      "Loss of consciousness",
+      "Hot, dry skin (no sweating)",
+      "Rapid pulse"
+    ]
+  },
+  {
+    "condition": "Anxiety",
+    "category": "Mental Health",
+    "symptoms": [
+      "excessive worry",
+      "restlessness",
+      "fatigue",
+      "difficulty concentrating",
+      "muscle tension",
+      "sleep problems",
+      "rapid heartbeat"
+    ],
+    "severity": "mild to moderate",
+    "description": "A mental health condition characterized by persistent worry and fear.",
+    "basic_advice": [
+      "Practice deep breathing exercises",
+      "Engage in regular physical activity",
+      "Maintain a regular sleep schedule",
+      "Limit caffeine and alcohol",
+      "Talk to someone you trust"
+    ],
+    "warning_signs": [
+      "Thoughts of self-harm",
+      "Panic attacks",
+      "Inability to perform daily activities",
+      "Symptoms interfering with work or relationships",
+      "Substance abuse"
+    ]
+  },
+  {
+    "condition": "Insomnia",
+    "category": "Sleep Disorder",
+    "symptoms": [
+      "difficulty falling asleep",
+      "waking up during night",
+      "waking up too early",
+      "daytime fatigue",
+      "irritability",
+      "difficulty concentrating"
+    ],
+    "severity": "mild to moderate",
+    "description": "A sleep disorder characterized by difficulty falling or staying asleep.",
+    "basic_advice": [
+      "Maintain a consistent sleep schedule",
+      "Create a relaxing bedtime routine",
+      "Avoid screens before bed",
+      "Keep bedroom cool and dark",
+      "Avoid caffeine and large meals before bed"
+    ],
+    "warning_signs": [
+      "Insomnia lasting more than 3 weeks",
+      "Severe daytime impairment",
+      "Snoring or gasping during sleep",
+      "Depression or anxiety",
+      "Using alcohol or medications to sleep"
+    ]
+  },
+  {
+    "condition": "Muscle Strain",
+    "category": "Musculoskeletal",
+    "symptoms": [
+      "muscle pain",
+      "swelling",
+      "limited range of motion",
+      "bruising",
+      "muscle weakness",
+      "stiffness"
+    ],
+    "severity": "mild to moderate",
+    "description": "An injury to a muscle or tendon, often caused by overstretching or overuse.",
+    "basic_advice": [
+      "Rest the affected muscle",
+      "Apply ice for first 48 hours",
+      "Compress with elastic bandage",
+      "Elevate the injured area",
+      "Gentle stretching after initial pain subsides"
+    ],
+    "warning_signs": [
+      "Severe pain or inability to move the muscle",
+      "Significant swelling or bruising",
+      "Numbness or tingling",
+      "No improvement after 2 weeks",
+      "Popping sound at time of injury"
+    ]
+  },
+  {
+    "condition": "Acid Reflux (GERD)",
+    "category": "Gastrointestinal",
+    "symptoms": [
+      "heartburn",
+      "chest pain",
+      "difficulty swallowing",
+      "regurgitation",
+      "sour taste in mouth",
+      "chronic cough"
+    ],
+    "severity": "mild to moderate",
+    "description": "A condition where stomach acid flows back into the esophagus.",
+    "basic_advice": [
+      "Avoid trigger foods (spicy, fatty, acidic)",
+      "Eat smaller, more frequent meals",
+      "Don't lie down immediately after eating",
+      "Elevate head of bed",
+      "Maintain healthy weight"
+    ],
+    "warning_signs": [
+      "Severe chest pain (rule out heart attack)",
+      "Difficulty swallowing",
+      "Persistent vomiting",
+      "Unintended weight loss",
+      "Black or bloody stools"
+    ]
+  },
+  {
+    "condition": "Asthma Attack",
+    "category": "Respiratory",
+    "symptoms": [
+      "wheezing",
+      "shortness of breath",
+      "chest tightness",
+      "coughing",
+      "difficulty speaking",
+      "rapid breathing"
+    ],
+    "severity": "moderate to severe",
+    "description": "A sudden worsening of asthma symptoms caused by tightening of airways.",
+    "basic_advice": [
+      "Use rescue inhaler as prescribed",
+      "Sit upright",
+      "Stay calm and breathe slowly",
+      "Avoid triggers (smoke, allergens)",
+      "Follow asthma action plan"
+    ],
+    "warning_signs": [
+      "Severe difficulty breathing",
+      "Blue lips or fingernails",
+      "Inability to speak in full sentences",
+      "No improvement after using inhaler",
+      "Extreme anxiety or confusion"
+    ]
+  },
+  {
+    "condition": "Eczema (Atopic Dermatitis)",
+    "category": "Skin",
+    "symptoms": [
+      "itchy skin",
+      "red patches",
+      "dry skin",
+      "cracked skin",
+      "small bumps",
+      "thickened skin"
+    ],
+    "severity": "mild to moderate",
+    "description": "A chronic skin condition that causes inflammation and irritation.",
+    "basic_advice": [
+      "Moisturize skin regularly",
+      "Avoid harsh soaps and detergents",
+      "Take lukewarm baths",
+      "Avoid scratching",
+      "Identify and avoid triggers"
+    ],
+    "warning_signs": [
+      "Signs of infection (pus, increased redness, warmth)",
+      "Severe itching interfering with sleep",
+      "Widespread rash",
+      "No improvement with home care",
+      "Fever with rash"
+    ]
+  },
+  {
+    "condition": "",
+    "symptoms": [
+      "Allergy",
+      "Dimorphic hemmorhoids(piles)",
+      "Bronchial Asthma",
+      "Hepatitis C",
+      "Hepatitis E",
+      "GERD",
+      "1",
+      "Urinary tract infection",
+      "(vertigo) Paroymsal  Positional Vertigo",
+      "Psoriasis",
+      "Typhoid",
+      "Malaria",
+      "Hepatitis B",
+      "Drug Reaction",
+      "0",
+      "Paralysis (brain hemorrhage)",
+      "Pneumonia",
+      "Osteoarthristis",
+      "Tuberculosis",
+      "Jaundice",
+      "Impetigo",
+      "Peptic ulcer diseae",
+      "Hepatitis D",
+      "Hypertension",
+      "Arthritis",
+      "Dengue",
+      "Hypothyroidism",
+      "Migraine",
+      "Gastroenteritis",
+      "Chronic cholestasis",
+      "Diabetes",
+      "Cervical spondylosis",
+      "Hyperthyroidism",
+      "Hypoglycemia",
+      "Heart attack",
+      "Common Cold",
+      "hepatitis A",
+      "AIDS",
+      "Alcoholic hepatitis",
+      "Chicken pox",
+      "Acne",
+      "Varicose veins",
+      "Fungal infection"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A medical condition characterized by Allergy, Dimorphic hemmorhoids(piles), Bronchial Asthma.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Fungal infection",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "An infection caused by fungi that can affect skin, nails, or internal organs.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Allergy",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "An immune system response to a foreign substance that is typically harmless.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "GERD",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "Gastroesophageal reflux disease - a digestive disorder affecting the lower esophageal sphincter.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Chronic cholestasis",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A condition where bile flow from the liver is reduced or blocked.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Drug Reaction",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "An adverse response to a medication or drug.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Peptic ulcer diseae",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "Open sores that develop on the inner lining of the stomach and upper small intestine.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "AIDS",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "Acquired immunodeficiency syndrome - a chronic, potentially life-threatening condition caused by HIV.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Diabetes",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A disease that occurs when blood glucose is too high.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Gastroenteritis",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "Inflammation of the stomach and intestines, typically from infection.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Bronchial Asthma",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A condition in which airways narrow and swell, producing extra mucus.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Hypertension",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "High blood pressure - a condition where blood pressure in arteries is persistently elevated.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Cervical spondylosis",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "Age-related wear and tear affecting the spinal disks in the neck.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Paralysis (brain hemorrhage)",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "Loss of muscle function due to bleeding in the brain.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Jaundice",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A condition where skin and whites of eyes turn yellow due to high bilirubin.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Malaria",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A disease caused by parasites transmitted through mosquito bites.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Chicken pox",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A highly contagious viral infection causing an itchy, blister-like rash.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Dengue",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A mosquito-borne viral infection causing flu-like illness.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Typhoid",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A bacterial infection that can spread throughout the body.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "hepatitis A",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A highly contagious liver infection caused by the hepatitis A virus.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Hepatitis B",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A serious liver infection caused by the hepatitis B virus.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Hepatitis C",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A viral infection that causes liver inflammation.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Hepatitis D",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A liver infection caused by the hepatitis D virus.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Hepatitis E",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A liver disease caused by the hepatitis E virus.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Alcoholic hepatitis",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "Liver inflammation caused by drinking too much alcohol.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Tuberculosis",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A potentially serious infectious disease that mainly affects the lungs.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Pneumonia",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "An infection that inflames air sacs in one or both lungs.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Dimorphic hemmorhoids(piles)",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "Swollen veins in the lower rectum and anus.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Heart attack",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A blockage of blood flow to the heart muscle.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Varicose veins",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "Enlarged, twisted veins that usually occur in the legs.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Hypothyroidism",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A condition where the thyroid gland does not produce enough hormones.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Hyperthyroidism",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A condition where the thyroid gland produces too much hormone.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Hypoglycemia",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A condition characterized by abnormally low blood sugar.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Osteoarthristis",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A type of arthritis that occurs when flexible tissue at the ends of bones wears down.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Arthritis",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "Inflammation of one or more joints, causing pain and stiffness.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "(vertigo) Paroymsal  Positional Vertigo",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A disorder arising from a problem in the inner ear.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Acne",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A skin condition that occurs when hair follicles become plugged with oil and dead skin cells.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Urinary tract infection",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "An infection in any part of the urinary system.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Psoriasis",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A skin disease that causes red, itchy scaly patches.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  },
+  {
+    "condition": "Impetigo",
+    "symptoms": [
+      "1",
+      "0"
+    ],
+    "category": "General",
+    "severity": "moderate",
+    "description": "A highly contagious skin infection that mainly affects infants and children.",
+    "basic_advice": [
+      "Get adequate rest and sleep",
+      "Stay well hydrated with water",
+      "Maintain a balanced, nutritious diet",
+      "Avoid known triggers or irritants",
+      "Practice good hygiene"
+    ],
+    "warning_signs": [
+      "Symptoms worsening or not improving after 3-5 days",
+      "High fever above 39°C (102.2°F)",
+      "Severe pain or discomfort",
+      "Difficulty breathing or chest pain",
+      "Signs of dehydration (dark urine, dizziness, dry mouth)"
+    ]
+  }
+]
