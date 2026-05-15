@@ -15,7 +15,7 @@ from langchain.tools import tool
 load_dotenv()
 
 EMBEDDING_MODEL = os.getenv('EMBEDDING_MODEL', 'sentence-transformers/all-MiniLM-L6-v2')
-VECTOR_DB_PATH = os.getenv('VECTOR_DB_PATH', 'data/vectordb/faiss_index')
+VECTOR_DB_PATH = os.getenv('VECTOR_DB_PATH', 'data/vectordb/vector_store')
 
 # Global vector store (loaded once)
 _index = None
