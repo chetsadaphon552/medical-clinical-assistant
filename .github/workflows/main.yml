@@ -40,4 +40,4 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           # Change to your actual HF Space
-          git push https://chetsadaphon66:${HF_TOKEN}@huggingface.co/spaces/chetsadaphon66/medical-clinical-assistant main
+          git push https://chetsadaphon552:${HF_TOKEN}@huggingface.co/spaces/chetsadaphon552/medical-clinical-assistant main
