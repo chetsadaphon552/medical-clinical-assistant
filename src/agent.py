@@ -401,7 +401,9 @@ Clinical Considerations:
             return response
             
         except Exception as e:
-            logger.error(f"❌ Error processing query: {e}")
+            import traceback
+            error_msg = f"{e}\n{traceback.format_exc()}"
+            logger.error(f"❌ Error processing query: {error_msg}")
             return f"I apologize, but I encountered an error. Please try rephrasing your symptoms or consult a healthcare professional."
     
     def chat(self):
