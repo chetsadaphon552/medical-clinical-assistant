@@ -33,6 +33,6 @@ jobs:
               repo_id='chetsadaphon66/medical-clinical-assistant',
               repo_type='space',
               token='${{ secrets.HF_TOKEN }}',
-              ignore_patterns=['.git*', 'logs/*', 'data/*']
+              ignore_patterns=['.git*', 'logs/*']
           )
           "
