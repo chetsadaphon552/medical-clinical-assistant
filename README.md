@@ -38,27 +38,56 @@ pinned: false
 
 ---
 
-## 🚀 การติดตั้งและใช้งาน (Installation & Usage)
-
-### 1. ใช้งานผ่าน Cloud (Hugging Face)
-สามารถเข้าใช้งานได้ทันทีที่: `https://huggingface.co/spaces/chetsadaphon66/medical-clinical-assistant`
-
-### 2. ใช้งานภายในเครื่อง (Local Run - แนะนำ)
-คุณสามารถรันระบบบนเครื่องตัวเองได้ 2 วิธี:
-
-**วิธีที่ 2.1: รันด้วย Python / Streamlit โดยตรง (เหมาะสำหรับ Dev)**
-```bash
-# 1. ติดตั้งไลบรารี
-pip install -r requirements.txt
-
-# 2. รันหน้าเว็บ
-python -m streamlit run app.py
+## 📂 โครงสร้างโปรเจกต์ (Project Structure)
+```text
+medical-symptom-assistant/
+├── app.py                  # หน้าเว็บ UI หลัก (Streamlit)
+├── api.py                  # ระบบ REST API (FastAPI) สำหรับเรียกผ่าน cURL/Postman
+├── compare_models.py       # สคริปต์ A/B Testing สำหรับเปรียบเทียบโมเดล Embedding
+├── DISEASE_LIST.md         # พจนานุกรมรายชื่อโรค 22 โรคที่รองรับ
+├── docker-compose.yml      # ไฟล์ตั้งค่า Docker Compose สำหรับรันบน Server
+├── Dockerfile              # ไฟล์สำหรับสร้าง Docker Image
+├── requirements.txt        # รายการไลบรารีที่ต้องใช้
+├── .env                    # (คุณต้องสร้างเอง) ไฟล์เก็บรหัส QWEN_API_KEY
+├── data/
+│   ├── raw/                # ข้อมูลดิบ (Dataset)
+│   ├── processed/          # ข้อมูลที่ผ่านการจัดเตรียม (documents.json)
+│   └── vectordb/           # ฐานข้อมูล Vector (FAISS Index)
+└── src/
+    ├── agent.py            # หัวสมองหลัก (LLM Logic, Translation, System Prompts)
+    ├── tools.py            # เครื่องมือของ AI (Vector Search, FAISS Retrieval)
+    └── setup_vectordb.py   # สคริปต์หั่น Chunk และสร้างฐานข้อมูลเวกเตอร์
 ```
 
-**วิธีที่ 2.2: รันด้วย Docker Compose (เหมาะสำหรับ Production)**
+## 🚀 การติดตั้งและใช้งาน (Installation & Usage)
+
+### 1. ใช้งานผ่าน Web UI (Streamlit)
+**รันบนเครื่อง Local:**
 ```bash
-# สร้างและรัน Container
+pip install -r requirements.txt
+python -m streamlit run app.py
+```
+**รันด้วย Docker:**
+```bash
 docker-compose up --build -d
+```
+
+### 2. ใช้งานผ่าน REST API (FastAPI)
+หากคุณต้องการนำระบบนี้ไปเชื่อมต่อกับ Frontend อื่น หรือ LINE Chatbot คุณสามารถเปิดรันเซิร์ฟเวอร์ API ได้ด้วยคำสั่ง:
+```bash
+pip install fastapi uvicorn
+uvicorn api:app --host 0.0.0.0 --port 8000
+```
+
+**ตัวอย่างการยิง cURL Command เพื่อขอรับการวิเคราะห์อาการ:**
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/api/analyze' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "symptoms": "ปวดศีรษะมาก มีไข้สูง และปวดกระบอกตามา 2 วัน"
+}'
 ```
 
 ## 🔐 การตั้งค่าสภาพแวดล้อม (Environment Variables)
