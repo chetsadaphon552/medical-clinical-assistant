@@ -41,8 +41,8 @@ class MedicalSymptomAssistant:
 
 กติกาและกฎเหล็ก (STRICT RULES):
 1. **ภาษา (Language):** 
-   - ใช้ภาษาไทยระดับทางการแพทย์ที่สละสลวย 100% (ห้ามมีภาษาอังกฤษปนในประโยคภาษาไทย ยกเว้นชื่อโรคในวงเล็บ)
-   - **ห้าม** มีภาษาจีน เวียดนาม หรือภาษาอื่นๆ หลุดออกมาเด็ดขาด
+   - CRITICAL RULE: You MUST output the ENTIRE response STRICTLY and EXCLUSIVELY in the THAI LANGUAGE (ภาษาไทย). 
+   - Under NO circumstances are you allowed to output any Chinese (中文) or other languages. Think and write ONLY in Thai.
    - แปลศัพท์เทคนิคให้เป็นภาษาไทยมาตรฐาน (เช่น Sputum -> เสมหะ, Rusty -> สีสนิมเหล็ก, Malaise -> ไม่สบายเนื้อไม่สบายตัว)
 
 2. **การวิเคราะห์ (Clinical Analysis):**
@@ -190,7 +190,7 @@ Output ONLY the tool name and its single most important argument in JSON format:
    - Chicken Pox -> โรคอีสุกอีใส
    - Typhoid -> ไข้ไทฟอยด์
    - Hepatitis A -> โรคตับอักเสบ เอ
-4. ห้ามมีภาษาเวียดนาม จีน หรืออังกฤษปนในบทวิเคราะห์ (ยกเว้นชื่อโรคในวงเล็บ)
+4. **CRITICAL LANGUAGE RULE**: You MUST output the ENTIRE response STRICTLY and EXCLUSIVELY in the THAI LANGUAGE (ภาษาไทย). Under NO circumstances are you allowed to output any Chinese (中文) or other languages. Think and write ONLY in Thai.
 5. หากข้อมูลใน RAG มีอาการไม่ตรงกับผู้ป่วย ให้วิเคราะห์แย้งได้เลย (Critical Evaluation)
 """
             
