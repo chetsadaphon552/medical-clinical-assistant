@@ -54,7 +54,7 @@ class MedicalSymptomAssistant:
 3. **รูปแบบ (Formatting):**
    - ใช้ Markdown Table สำหรับรายชื่อโรค
    - เว้นบรรทัด (Double Newline) ระหว่างหัวข้อใหญ่เพื่อให้ดูสะอาดตา
-   - ใช้หัวข้อหลักดังนี้: ### 📊 รายชื่อโรคที่เป็นไปได้, ### 🧠 บทวิเคราะห์ทางคลินิก, ### ⚠️ ข้อพิจารณาเพิ่มเติม
+   - ใช้หัวข้อหลักดังนี้: ### รายชื่อโรคที่เป็นไปได้ (Possible Conditions), ### บทวิเคราะห์ทางคลินิก (Clinical Analysis), ### ข้อพิจารณาเพิ่มเติม (Clinical Considerations)
 
     *ตารางพจนานุกรมแปลศัพท์ (Internal Translation Map):*
     - Chest tightness -> แน่นหน้าอก
@@ -79,10 +79,10 @@ class MedicalSymptomAssistant:
         
         prompt = f"""Analyze the user query and select the best medical tool.
 
-**RULES:**
-1. If the query is a greeting (hello, hi), goodbye (bye, farewell), thank you, or meta-comment about the AI (how do you work, why can you answer), you MUST select 'none'.
-2. Select 'search_symptoms' ONLY if the user describes actual physical or mental symptoms.
-3. Select 'none' if the query is vague or unrelated to a specific health concern.
+**STRICT RULES FOR TOOL SELECTION:**
+1. If the input is conversational (hello, how are you), a greeting, a goodbye, a joke, a test phrase, or ANYTHING other than a clear description of a medical symptom, you MUST select 'none'.
+2. Select 'search_symptoms' ONLY if the user describes actual physical or mental symptoms (e.g., "I have a headache", "My stomach hurts").
+3. Select 'none' if the query is vague, extremely short (like a single non-medical word), or unrelated to a specific health concern.
 
 User Query: {user_input}
 
@@ -90,7 +90,7 @@ Available Tools:
 1. 'search_symptoms': For searching possible conditions based on symptoms.
 2. 'get_condition_details': For detailed information about a specific known condition.
 3. 'get_warning_signs': For warning signs or emergency indicators of a condition.
-4. 'none': For greetings, goodbyes, general chat, or non-medical topics.
+4. 'none': For greetings, goodbyes, general chat, tests, or non-medical topics.
 
 Output ONLY the tool name and its single most important argument in JSON format:
 {{"tool": "tool_name", "argument": "value"}}
@@ -134,12 +134,13 @@ Output ONLY the tool name and its single most important argument in JSON format:
             # Step 2: Translate to English for better RAG if it's Thai
             if is_thai:
                 logger.info("🌐 Translating Thai to Eng")
-                trans_prompt = f"Translate the following Thai medical query to English. Output ONLY the translation: {user_input}"
+                # Removed 'medical query' assumption so it translates conversational phrases naturally
+                trans_prompt = f"Translate the following Thai text to English. Output ONLY the exact translation without any explanation or added context: {user_input}"
                 user_input = self.llm.invoke([HumanMessage(content=trans_prompt)]).content
                 logger.info(f"📥 Translated Query: {user_input}")
 
             # Step 3: Tool selection
-            logger.info("🤔 Analyzing symptoms...")
+            logger.info("🤔 Analyzing input scope...")
             tool_name, tool_input = self._select_tool(user_input)
             
             if tool_name == 'none':

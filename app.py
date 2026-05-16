@@ -5,8 +5,8 @@ from src.agent import MedicalSymptomAssistant
 
 # Page Configuration
 st.set_page_config(
-    page_title="Clinical CDS Dashboard",
-    page_icon="🏥",
+    page_title="Clinical Decision Support System",
+    page_icon="⚕️",
     layout="wide"
 )
 
@@ -15,19 +15,19 @@ st.markdown("""
 <style>
     /* Main Background */
     .stApp {
-        background-color: #f8fafc;
+        background-color: #F4F7F6;
     }
     
     /* Header */
     .main-header {
         font-family: 'Inter', sans-serif;
-        color: #0f172a;
+        color: #1A365D;
         font-weight: 800;
         text-align: center;
         padding: 20px 0;
     }
     
-    /* Force all Markdown text to be BLACK */
+    /* Force all Markdown text to be BLACK/Dark Blue */
     [data-testid="stMarkdownContainer"] p, 
     [data-testid="stMarkdownContainer"] li,
     [data-testid="stMarkdownContainer"] td,
@@ -35,7 +35,7 @@ st.markdown("""
     [data-testid="stMarkdownContainer"] h1,
     [data-testid="stMarkdownContainer"] h2,
     [data-testid="stMarkdownContainer"] h3 {
-        color: #000000 !important;
+        color: #2D3748 !important;
     }
     
     /* Style the table */
@@ -43,23 +43,24 @@ st.markdown("""
         width: 100%;
         border-collapse: collapse;
         margin: 20px 0;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #CBD5E0;
     }
     th {
-        background-color: #f1f5f9;
+        background-color: #E2E8F0;
+        color: #2D3748;
         font-weight: bold;
         text-align: left;
         padding: 12px;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #CBD5E0;
     }
     td {
         padding: 12px;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #CBD5E0;
     }
 
     /* Sidebar */
     section[data-testid="stSidebar"] {
-        background-color: #0f172a !important;
+        background-color: #1A365D !important;
     }
     section[data-testid="stSidebar"] * {
         color: white !important;
@@ -69,7 +70,7 @@ st.markdown("""
 
 # Initialize Session State
 if 'agent' not in st.session_state:
-    with st.spinner("🏥 Starting Agent..."):
+    with st.spinner("Initializing System..."):
         try:
             st.session_state.agent = MedicalSymptomAssistant()
         except Exception as e:
@@ -77,41 +78,42 @@ if 'agent' not in st.session_state:
 
 # Sidebar
 with st.sidebar:
-    st.markdown("<h2 style='text-align: center;'>🏥 CDS Panel</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center;'>CDSS Control Panel</h2>", unsafe_allow_html=True)
     st.markdown("---")
-    if st.button("🗑️ ล้างประวัติ"):
+    if st.button("Clear History"):
         if os.path.exists("logs/agent.log"):
             with open("logs/agent.log", "w") as f: f.write("")
         st.rerun()
 
 # --- Header Section ---
-st.title("🏥 Clinical Decision Assistant")
-st.markdown("ระบบสนับสนุนการตัดสินใจทางคลินิกอัจฉริยะ (Professional CDSS)")
+st.title("Clinical Decision Support System")
+st.markdown("ระบบสนับสนุนการตัดสินใจทางคลินิก (CDSS)")
+st.markdown("---")
 
 # Layout
 col_left, col_right = st.columns([1, 1.5], gap="large")
 
 with col_left:
-    st.markdown("### 📋 ข้อมูลผู้ป่วย")
-    user_input = st.text_area("ระบุอาการ:", placeholder="ระบุอาการทางคลินิกที่นี่...", height=150)
-    analyze_btn = st.button("🔍 วิเคราะห์อาการ")
+    st.markdown("### Patient Clinical Data")
+    user_input = st.text_area("Chief Complaint / Symptoms:", placeholder="ระบุอาการแสดงทางคลินิกของผู้ป่วย...", height=150)
+    analyze_btn = st.button("Analyze Symptoms")
 
 with col_right:
     if analyze_btn and user_input:
-        with st.spinner("🔄 กำลังประมวลผล..."):
+        with st.spinner("Processing Clinical Data..."):
             try:
                 response = st.session_state.agent.query(user_input)
                 
-                st.markdown("### 📊 รายงานผลการวิเคราะห์")
+                st.markdown("### Clinical Analysis Report")
                 # Use a container for the report with a border
                 with st.container(border=True):
                     st.markdown(response) # Pure markdown for correct table rendering
                 
-                with st.expander("🛠️ ระบบการทำงาน (Log Trace)"):
+                with st.expander("System Trace Logs"):
                     if os.path.exists("logs/agent.log"):
                         with open("logs/agent.log", "r", encoding='utf-8') as f:
                             st.code("".join(f.readlines()[-20:]), language="text")
             except Exception as e:
                 st.error(f"Error: {e}")
     else:
-        st.info("💡 กรุณาระบุอาการด้านซ้ายเพื่อเริ่มการวิเคราะห์")
+        st.info("Please input patient symptoms on the left panel to begin the analysis.")
