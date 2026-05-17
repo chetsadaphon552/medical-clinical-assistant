@@ -417,13 +417,11 @@ class MedicalSymptomAssistant:
         original = user_input
         is_thai  = bool(re.search(r"[ก-ฮ]", user_input))
 
-        # With bge-m3 multilingual embedding, Thai queries match English documents directly.
-        # Translation is only needed for the tool router (English-only LLM reasoning).
+        # Translate Thai → English for RAG retrieval (bge-base-en-v1.5 is English-only)
         if is_thai:
-            translated = self._translate_to_english(user_input)
-            logger.info(f"TRANSLATED (for routing only): {translated}")
-        else:
-            translated = user_input
+            user_input = self._translate_to_english(user_input)
+            logger.info(f"TRANSLATED: {user_input}")
+        translated = user_input
 
         # 2. Route to tool (use translated text for better LLM routing)
         tool_name, tool_input = self._route(translated)
@@ -462,9 +460,9 @@ class MedicalSymptomAssistant:
                     "กรุณาอธิบายอาการทางกายภาพให้ชัดเจนขึ้น เช่น มีไข้ ปวดหัว ไอ ผื่นขึ้น บวม ฯลฯ"
                 )
             else:
-                # Use original Thai text for RAG — bge-m3 handles Thai directly
-                tool_input = {"symptoms": original}
-                logger.info(f"RAG INPUT (Thai): {original}")
+                # Use translated English text for RAG — bge-base-en-v1.5 is English-only
+                tool_input = {"symptoms": translated}
+                logger.info(f"RAG INPUT (English): {translated}")
 
         # 3. Whitelist guard for get_condition_details
         if tool_name == "get_condition_details":
@@ -486,7 +484,7 @@ class MedicalSymptomAssistant:
                 return NOT_FOUND_MSG + self._debug_tag(tool_name)
 
             scores = [float(s) for s in re.findall(r"Confidence Score:\s*([\d.]+)", rag_raw)]
-            if scores and max(scores) < 0.65:
+            if scores and max(scores) < 0.55:
                 logger.info(f"LOW CONFIDENCE: max={max(scores):.2f}")
                 return (
                     "ขออภัยครับ ไม่พบโรคในฐานข้อมูลที่สอดคล้องกับอาการที่ระบุ "
