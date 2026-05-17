@@ -146,14 +146,16 @@ Perform differential diagnosis based on the patient's reported symptoms and the 
 
 ## Output Format (strict)
 ### รายชื่อโรคที่เป็นไปได้ (Possible Conditions)
-Present up to Top 3 conditions from RAG only. Sort by confidence score descending.
-Use this exact table format — Thai name first, English in parentheses:
+Present ONLY conditions that appear in the RAG context above with a real confidence score.
+- Show maximum 3 conditions, minimum 1.
+- If RAG contains only 2 conditions, show only 2 rows — do NOT invent a 3rd row.
+- Sort by confidence score descending (row 1 > row 2 > row 3).
+- Use this exact table format — Thai name first, English in parentheses:
 
 | ลำดับ | รายชื่อโรค | คะแนนความมั่นใจ |
 |-------|-----------|-----------------|
 | 1 | ชื่อภาษาไทย (English) | 0.XX |
 | 2 | ชื่อภาษาไทย (English) | 0.XX |
-| 3 | ชื่อภาษาไทย (English) | 0.XX |
 
 Disease name mapping (use exactly):
 Dengue→ไข้เลือดออก | Typhoid→ไข้ไทฟอยด์ | Pneumonia→ปอดอักเสบ | Diabetes→โรคเบาหวาน
@@ -205,19 +207,28 @@ You are a medical query router. Classify the user query into exactly one of thre
 ## Tool Definitions
 1. get_condition_details — user asks about a NAMED disease (symptoms, definition, info, details)
    Trigger phrases: อาการของ, อาการโรค, รายละเอียด, บอกเกี่ยวกับ, เป็นยังไง, symptoms of, tell me about, what is
-2. search_symptoms — user describes physical symptoms they/patient are experiencing (no disease name)
-   Trigger phrases: มีไข้, ปวด, คัน, เหนื่อย, I have, I feel, patient has
-3. none — greeting, farewell, joke, or completely non-medical topic
+2. search_symptoms — user describes SPECIFIC PHYSICAL symptoms they/patient are experiencing (no disease name)
+   Valid symptoms: fever, pain, cough, rash, nausea, vomiting, fatigue, swelling, itching, dizziness, etc.
+   Trigger phrases: มีไข้, ปวด, คัน, เหนื่อย, ไอ, บวม, I have, I feel, patient has
+3. none — ANY of the following:
+   - Greeting, farewell, joke, or non-medical topic
+   - Vague complaints that are NOT specific physical symptoms (e.g. "ไม่สบาย", "เหนื่อยๆ", "ผอม", "อ้วน", "อ่อนแอ")
+   - Disease names that are NOT in the 22-disease whitelist
+   - Lifestyle or nutrition questions
 
 ## Decision Rule
 - Disease name present + asking about it → get_condition_details
-- Only symptoms described, no disease name → search_symptoms
-- Non-medical → none
+- Specific physical symptoms described, no disease name → search_symptoms
+- Vague, non-specific, or non-medical → none
 
 ## Examples
 "อาการไข้เลือดออก" → {{"tool":"get_condition_details","argument":"dengue"}}
 "โรคตับอักเสบมีอาการอะไร" → {{"tool":"get_condition_details","argument":"hepatitis a"}}
 "มีไข้ ปวดหัว อ่อนเพลีย" → {{"tool":"search_symptoms","argument":"fever headache fatigue"}}
+"ปวดขา บวม เส้นเลือดโป่ง" → {{"tool":"search_symptoms","argument":"leg pain swelling varicose"}}
+"อาการโรคผอม" → {{"tool":"none","argument":""}}
+"โรคมะเร็ง" → {{"tool":"none","argument":""}}
+"เหนื่อยๆ ไม่สบาย" → {{"tool":"none","argument":""}}
 "สวัสดี" → {{"tool":"none","argument":""}}
 
 ## Query
@@ -343,7 +354,7 @@ class MedicalSymptomAssistant:
                 return NOT_FOUND_MSG + self._debug_tag(tool_name)
 
             scores = [float(s) for s in re.findall(r"Confidence Score:\s*([\d.]+)", rag_raw)]
-            if scores and max(scores) < 0.62:
+            if scores and max(scores) < 0.65:
                 logger.info(f"LOW CONFIDENCE: max={max(scores):.2f}")
                 return (
                     "ขออภัยครับ ไม่พบโรคในฐานข้อมูลที่สอดคล้องกับอาการที่ระบุ "
