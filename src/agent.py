@@ -202,39 +202,30 @@ Rules:
 """
 
 TOOL_ROUTER_PROMPT = """\
-You are a medical query router. Classify the user query into exactly one of three tools.
+You are a medical query router. Your job is to understand the INTENT of the query and route it correctly.
 
-## Tool Definitions
-1. get_condition_details — user asks about a NAMED disease (symptoms, definition, info, details)
-   Trigger phrases: อาการของ, อาการโรค, รายละเอียด, บอกเกี่ยวกับ, เป็นยังไง, symptoms of, tell me about, what is
-2. search_symptoms — user describes SPECIFIC PHYSICAL symptoms they/patient are experiencing (no disease name)
-   Valid symptoms: fever, pain, cough, rash, nausea, vomiting, fatigue, swelling, itching, dizziness, etc.
-   Trigger phrases: มีไข้, ปวด, คัน, เหนื่อย, ไอ, บวม, I have, I feel, patient has
-3. none — ANY of the following:
-   - Greeting, farewell, joke, or non-medical topic
-   - Vague complaints that are NOT specific physical symptoms (e.g. "ไม่สบาย", "เหนื่อยๆ", "ผอม", "อ้วน", "อ่อนแอ")
-   - Disease names that are NOT in the 22-disease whitelist
-   - Lifestyle or nutrition questions
+## Tools
+1. **get_condition_details** — The user wants to learn about a specific named disease.
+   - The query contains a disease name AND asks about it (symptoms, definition, details, etc.)
+   - Examples: "dengue symptoms", "what is malaria", "tell me about diabetes", "อาการไข้เลือดออก"
 
-## Decision Rule
-- Disease name present + asking about it → get_condition_details
-- Specific physical symptoms described, no disease name → search_symptoms
-- Vague, non-specific, or non-medical → none
+2. **search_symptoms** — The user is describing specific physical symptoms that a patient is experiencing.
+   - The query contains concrete, observable physical symptoms (fever, pain, rash, cough, swelling, etc.)
+   - No specific disease name is mentioned — only symptoms
+   - Examples: "high fever and headache", "มีไข้ ปวดหัว ผื่นขึ้น"
 
-## Examples
-"อาการไข้เลือดออก" → {{"tool":"get_condition_details","argument":"dengue"}}
-"โรคตับอักเสบมีอาการอะไร" → {{"tool":"get_condition_details","argument":"hepatitis a"}}
-"มีไข้ ปวดหัว อ่อนเพลีย" → {{"tool":"search_symptoms","argument":"fever headache fatigue"}}
-"ปวดขา บวม เส้นเลือดโป่ง" → {{"tool":"search_symptoms","argument":"leg pain swelling varicose"}}
-"อาการโรคผอม" → {{"tool":"none","argument":""}}
-"โรคมะเร็ง" → {{"tool":"none","argument":""}}
-"เหนื่อยๆ ไม่สบาย" → {{"tool":"none","argument":""}}
-"สวัสดี" → {{"tool":"none","argument":""}}
+3. **none** — Everything else:
+   - Greetings, farewells, jokes, small talk
+   - Vague or non-physical complaints that are not clinical symptoms (e.g. "ผอม", "อ้วน", "ไม่สบาย", "อ่อนแอ", "เครียด")
+   - Disease names outside the medical knowledge base (e.g. cancer, HIV, heart disease)
+   - Lifestyle, nutrition, or general wellness questions
+   - Anything unrelated to clinical medicine
 
 ## Query
 {query}
 
-Respond with ONLY a JSON object — no explanation, no markdown.
+Think about what the user actually wants, then respond with ONLY a JSON object:
+{{"tool": "<tool_name>", "argument": "<key_value>"}}
 """
 
 
