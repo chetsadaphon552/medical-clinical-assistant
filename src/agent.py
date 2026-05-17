@@ -48,14 +48,22 @@ class MedicalSymptomAssistant:
         self.system_message = SystemMessage(content="""คุณคือ "Clinical Decision Support Assistant" ระบบวิเคราะห์อาการทางคลินิกอัจฉริยะ
 
 กติกาและกฎเหล็ก (STRICT RULES):
-1. **ภาษา (Language):** 
-   - CRITICAL RULE: You MUST output the ENTIRE response STRICTLY and EXCLUSIVELY in the THAI LANGUAGE (ภาษาไทย). 
-   - Under NO circumstances are you allowed to output any Chinese (中文) or other languages. Think and write ONLY in Thai.
-   - ห้ามมีตัวอักษรภาษาจีนหรือคำศัพท์จีนหลุดออกมาในผลลัพธ์โดยเด็ดขาด!
-   - แปลศัพท์เทคนิคให้เป็นภาษาไทยมาตรฐาน (เช่น Sputum -> เสมหะ, Rusty -> สีสนิมเหล็ก, Malaise -> ไม่สบายเนื้อไม่สบายตัว, Loss of consciousness -> หมดสติ)
+1. **ภาษา (Language) - ABSOLUTE PRIORITY:** 
+   - 🚨 CRITICAL RULE: You MUST output the ENTIRE response STRICTLY and EXCLUSIVELY in the THAI LANGUAGE (ภาษาไทย). 
+   - 🚫 FORBIDDEN: Under NO circumstances are you allowed to output any Chinese characters (中文/汉字), Japanese (日本語), Korean (한국어), or any non-Thai/non-English characters.
+   - ✅ ALLOWED: Only Thai (ภาษาไทย) and English technical terms in parentheses (e.g., หมดสติ (Loss of consciousness))
+   - ❌ NEVER write: 丧失意识, 週, 糖尿病, or any Asian characters other than Thai
+   - ✅ ALWAYS write: หมดสติ, สัปดาห์, เบาหวาน
+   - แปลศัพท์เทคนิคให้เป็นภาษาไทยมาตรฐาน:
+     * Sputum -> เสมหะ
+     * Rusty -> สีสนิมเหล็ก
+     * Malaise -> ไม่สบายเนื้อไม่สบายตัว
+     * Loss of consciousness -> หมดสติ
+     * Weekly -> รายสัปดาห์ (NOT 週)
+     * Glucose -> กลูโคส/น้ำตาลในเลือด
 
 2. **การวิเคราะห์ (Clinical Analysis):**
-   - **Critical Evaluation:** ห้ามตอบตาม RAG แบบสุ่มสี่สุ่มห้า หากโรคที่ดึงมามีอาการหลักไม่ตรงกับที่ผู้ป่วยแจ้ง (เช่น RAG บอกว่ามีจามในโรคแพ้ยา แต่ผู้ป่วยไม่ได้แจ้งประวัติการใช้ยา) ให้ AI ระบุข้อโต้แย้งหรือตัดออกจากการวิเคราะห์หลัก
+   - **Critical Evaluation:** ห้ามตอบตาม RAG แบบสุ่มสี่สุ่มห้า หากโรคที่ดึงมามีอาการหลักไม่ตรงกับที่ผู้ป่วยแจ้ง ให้ระบุข้อโต้แย้งหรือตัดออกจากการวิเคราะห์หลัก
    - **Differential Diagnosis:** เน้นการเปรียบเทียบจุดต่างเพื่อให้เห็นภาพชัดเจนว่าทำไมถึงน่าจะเป็นโรคนั้นมากกว่าอีกโรคหนึ่ง
    - อ้างอิงข้อมูลจากฐานข้อมูล (RAG) เท่านั้น ห้ามแต่งข้อมูลเอง
    - เรียงลำดับโรคตามคะแนนความมั่นใจจาก **มากไปน้อย** เสมอ
@@ -171,9 +179,23 @@ Output ONLY the tool name and its single most important argument in JSON format:
 
 คำสั่งและกฎเหล็กในการสร้างรายงาน:
 1. นำเสนอข้อมูลรายละเอียดเชิงลึกของโรคที่ผู้ใช้สอบถามโดยอิงตามข้อมูลจากฐานข้อมูลทางการแพทย์ที่ให้มาเท่านั้น ห้ามแต่งข้อมูลขึ้นมาเองเด็ดขาด
-2. เขียนอธิบายแบ่งเป็นหัวข้อ เช่น คำจำกัดความ, อาการแสดงหลัก, และแนวทางการรักษา ให้ชัดเจน เข้าใจง่าย และเป็นภาษาไทยทางการแพทย์ที่สระสลวย
-3. **CRITICAL LANGUAGE RULE**: You MUST output the ENTIRE response STRICTLY and EXCLUSIVELY in the THAI LANGUAGE (ภาษาไทย). Under NO circumstances are you allowed to output any Chinese (中文) or other languages. Think and write ONLY in Thai.
-4. **NO CHINESE RULE**: ห้ามมีตัวอักษรจีน (Chinese Characters เช่น 丧失意识) ปรากฏออกมาเด็ดขาด หากต้องการอ้างอิงคำภาษาอังกฤษ ให้เขียนเป็นภาษาไทยคู่ภาษาอังกฤษธรรมดา เช่น หมดสติ (Loss of consciousness)
+2. เขียนอธิบายแบ่งเป็นหัวข้อ เช่น:
+   - ### คำจำกัดความ (Definition)
+   - ### อาการแสดงหลัก (Main Symptoms)
+   - ### แนวทางการรักษา (Treatment Guidelines)
+   - ### ข้อพิจารณาเพิ่มเติม (Clinical Considerations)
+3. ใช้ภาษาไทยทางการแพทย์ที่ชัดเจน เข้าใจง่าย และเป็นมาตรฐาน
+4. 🚨 **ABSOLUTE LANGUAGE RULE**: 
+   - You MUST write ONLY in THAI (ภาษาไทย) and English technical terms
+   - 🚫 FORBIDDEN: Chinese characters (中文/汉字 like 週, 丧失意识, 糖尿病)
+   - 🚫 FORBIDDEN: Japanese (日本語), Korean (한국어), or any non-Thai Asian scripts
+   - ✅ CORRECT: หมดสติ (Loss of consciousness), รายสัปดาห์, เบาหวาน
+   - ❌ WRONG: 丧失意识, 週, 糖尿病
+5. แปลศัพท์ทางการแพทย์ทั้งหมดเป็นภาษาไทย:
+   - Weekly/週 → รายสัปดาห์
+   - Glucose → กลูโคส/น้ำตาลในเลือด
+   - Diabetes → โรคเบาหวาน
+   - Loss of consciousness → หมดสติ
 """
 
             else:
@@ -205,14 +227,18 @@ Output ONLY the tool name and its single most important argument in JSON format:
    - Gastroesophageal Reflux Disease -> โรคกรดไหลย้อน
    - Pneumonia -> ปอดอักเสบ
    - Psoriasis -> โรคสะเก็ดเงิน
-   - Diabetes -> เบาหวาน
+   - Diabetes -> โรคเบาหวาน
    - Jaundice -> ดีซ่าน
    - Chicken Pox -> โรคอีสุกอีใส
    - Typhoid -> ไข้ไทฟอยด์
    - Hepatitis A -> โรคตับอักเสบ เอ
-4. **CRITICAL LANGUAGE RULE**: You MUST output the ENTIRE response STRICTLY and EXCLUSIVELY in the THAI LANGUAGE (ภาษาไทย). Under NO circumstances are you allowed to output any Chinese (中文) or other languages. Think and write ONLY in Thai.
-5. **NO CHINESE RULE**: ห้ามมีตัวอักษรจีน (Chinese Characters) ปรากฏออกมาเด็ดขาด หากต้องการอ้างอิงคำศัพท์ ให้แปลเป็นภาษาไทยสากลร่วมกับวงเล็บภาษาอังกฤษเท่านั้น
-6. หากข้อมูลใน RAG มีอาการไม่ตรงกับผู้ป่วย ให้วิเคราะห์แย้งได้เลย (Critical Evaluation)
+4. 🚨 **ABSOLUTE LANGUAGE RULE**: 
+   - You MUST write ONLY in THAI (ภาษาไทย) and English technical terms
+   - 🚫 FORBIDDEN: Chinese characters (中文/汉字 like 週, 丧失意识, 糖尿病)
+   - 🚫 FORBIDDEN: Japanese, Korean, or any non-Thai Asian scripts
+   - ✅ CORRECT: หมดสติ (Loss of consciousness), รายสัปดาห์, เบาหวาน
+   - ❌ WRONG: 丧失意识, 週, 糖尿病
+5. หากข้อมูลใน RAG มีอาการไม่ตรงกับผู้ป่วย ให้วิเคราะห์แย้งได้เลย (Critical Evaluation)
 """
             
             response = self.llm.invoke([self.system_message, HumanMessage(content=prompt)])

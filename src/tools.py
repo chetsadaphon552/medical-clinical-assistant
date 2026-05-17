@@ -137,145 +137,87 @@ def search_symptoms(symptoms: str, k: int = 5) -> str:
 def get_condition_details(condition_name: str) -> str:
     """
     Get detailed information about a specific medical condition.
+    Use this tool when the user asks for details, explanation, knowledge, warning signs, 
+    or general information about a specific disease.
     
     Args:
-        condition_name: Name of the condition (e.g., "Common Cold", "Influenza")
+        condition_name: Name of the condition (e.g., "Common Cold", "Diabetes", "Pneumonia")
     
     Returns:
-        Detailed information about the condition
+        Comprehensive detailed information about the condition including symptoms, treatment, and clinical considerations
     """
-    print(f"🔍 [Tool] Getting details for: {condition_name}")
+    print(f"🔍 [Tool] Getting comprehensive details for: {condition_name}")
     
     index, chunks, model = get_vectorstore()
     
-    # Search for the condition
-    query_embedding = model.encode([condition_name])[0]
-    distances, indices = index.search(np.array([query_embedding]).astype('float32'), 10)
+    # Enhanced query to get better semantic matches
+    enhanced_query = f"{condition_name} disease symptoms treatment clinical information"
+    query_embedding = model.encode([enhanced_query])[0]
+    query_embedding = query_embedding / np.linalg.norm(query_embedding)  # Normalize
     
-    # Find chunks for this condition
+    # Search with more candidates
+    similarities, indices = index.search(np.array([query_embedding]).astype('float32'), 30)
+    
+    # Find all chunks related to this condition with fuzzy matching
     condition_chunks = []
-    for idx in indices[0]:
+    condition_name_lower = condition_name.lower()
+    
+    for idx, similarity in zip(indices[0], similarities[0]):
         chunk = chunks[idx]
-        if chunk['metadata']['condition'].lower() == condition_name.lower():
-            condition_chunks.append(chunk)
+        chunk_condition = chunk['metadata']['condition'].lower()
+        
+        # Fuzzy match: exact match or contains the condition name
+        if (chunk_condition == condition_name_lower or 
+            condition_name_lower in chunk_condition or 
+            chunk_condition in condition_name_lower):
+            condition_chunks.append({
+                'chunk': chunk,
+                'similarity': float(similarity)
+            })
     
     if not condition_chunks:
-        return f"Condition '{condition_name}' not found in database."
+        # Fallback: try to find by highest similarity
+        print(f"⚠️ [Tool] Exact match not found, using semantic search fallback")
+        for idx, similarity in zip(indices[0][:5], similarities[0][:5]):
+            if similarity > 0.5:  # Only include relevant results
+                condition_chunks.append({
+                    'chunk': chunks[idx],
+                    'similarity': float(similarity)
+                })
     
-    # Combine all chunks for this condition
-    output = f"Detailed Information: {condition_chunks[0]['metadata']['condition']}\n"
-    output += "=" * 80 + "\n\n"
+    if not condition_chunks:
+        return f"ไม่พบข้อมูลของโรค '{condition_name}' ในฐานข้อมูล กรุณาตรวจสอบชื่อโรคหรือลองใช้ชื่อภาษาอังกฤษ"
     
-    # Get full text from all chunks
-    full_text = "\n".join([chunk['text'] for chunk in condition_chunks])
+    # Sort by similarity (highest first)
+    condition_chunks = sorted(condition_chunks, key=lambda x: x['similarity'], reverse=True)
+    
+    # Build comprehensive output
+    main_condition = condition_chunks[0]['chunk']['metadata']['condition']
+    output = f"=== รายละเอียดโรค: {main_condition} ===\n\n"
+    
+    # Combine all relevant chunks
+    all_texts = []
+    for item in condition_chunks:
+        chunk = item['chunk']
+        all_texts.append(chunk['text'])
+    
+    # Join all information
+    full_text = "\n\n".join(all_texts)
     output += full_text
     
-    print(f"✅ [Tool] Retrieved details for {condition_chunks[0]['metadata']['condition']}")
+    # Add metadata
+    output += f"\n\n--- Metadata ---\n"
+    output += f"Condition: {main_condition}\n"
+    output += f"Category: {condition_chunks[0]['chunk']['metadata'].get('category', 'N/A')}\n"
+    output += f"Severity: {condition_chunks[0]['chunk']['metadata'].get('severity', 'N/A')}\n"
+    output += f"Retrieved Chunks: {len(condition_chunks)}\n"
+    
+    print(f"✅ [Tool] Retrieved {len(condition_chunks)} chunks for '{main_condition}'")
     return output
 
 
-@tool
-def filter_by_severity(severity: str, symptoms: str = None) -> str:
-    """
-    Filter conditions by severity level.
-    
-    Args:
-        severity: Severity level (mild, moderate, severe)
-        symptoms: Optional symptoms to match
-    
-    Returns:
-        String with filtered conditions
-    """
-    print(f"🔍 [Tool] Filtering by severity: {severity}")
-    
-    index, chunks, model = get_vectorstore()
-    
-    # Build query
-    query = f"{severity} severity"
-    if symptoms:
-        query += f" {symptoms}"
-    
-    # Search
-    query_embedding = model.encode([query])[0]
-    distances, indices = index.search(np.array([query_embedding]).astype('float32'), 15)
-    
-    # Filter by severity
-    filtered = []
-    seen_conditions = set()
-    
-    for idx in indices[0]:
-        chunk = chunks[idx]
-        condition_name = chunk['metadata']['condition']
-        
-        if (chunk['metadata']['severity'].lower() == severity.lower() and 
-            condition_name not in seen_conditions):
-            filtered.append(chunk)
-            seen_conditions.add(condition_name)
-    
-    if not filtered:
-        return f"No conditions found with {severity} severity."
-    
-    output = f"Conditions with {severity} severity:\n\n"
-    
-    for i, chunk in enumerate(filtered[:5], 1):
-        output += f"{i}. {chunk['metadata']['condition']}\n"
-        output += f"   Category: {chunk['metadata']['category']}\n"
-        output += f"   Common symptoms: {', '.join(chunk['metadata']['symptoms'][:5])}\n\n"
-    
-    print(f"✅ [Tool] Found {len(filtered)} conditions")
-    return output
-
-
-@tool
-def get_warning_signs(condition_name: str) -> str:
-    """
-    Get warning signs for when to seek immediate medical attention.
-    
-    Args:
-        condition_name: Name of the condition
-    
-    Returns:
-        Warning signs and when to see a doctor
-    """
-    print(f"🔍 [Tool] Getting warning signs for: {condition_name}")
-    
-    index, chunks, model = get_vectorstore()
-    
-    # Search for the condition
-    query = f"{condition_name} warning signs seek medical attention"
-    query_embedding = model.encode([query])[0]
-    distances, indices = index.search(np.array([query_embedding]).astype('float32'), 5)
-    
-    # Find relevant chunk
-    for idx in indices[0]:
-        chunk = chunks[idx]
-        if condition_name.lower() in chunk['metadata']['condition'].lower():
-            # Extract warning signs section
-            text = chunk['text']
-            if 'Warning Signs' in text or 'Seek Medical Attention' in text:
-                lines = text.split('\n')
-                output = f"⚠️  Warning Signs for {chunk['metadata']['condition']}:\n\n"
-                
-                in_warning_section = False
-                for line in lines:
-                    if 'Warning Signs' in line or 'Seek Medical Attention' in line:
-                        in_warning_section = True
-                        continue
-                    if in_warning_section and line.strip():
-                        output += f"{line}\n"
-                
-                output += "\n⚠️  If you experience any of these warning signs, seek medical attention immediately."
-                
-                print(f"✅ [Tool] Retrieved warning signs")
-                return output
-    
-    return f"Warning signs for '{condition_name}' not found. Please consult a healthcare provider if symptoms worsen."
-
-
-# List of all tools
+# List of all tools (only 2 active tools)
 ALL_TOOLS = [
     search_symptoms,
-    get_condition_details,
-    filter_by_severity,
-    get_warning_signs
+    get_condition_details
 ]
