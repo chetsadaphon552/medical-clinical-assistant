@@ -285,6 +285,13 @@ class MedicalSymptomAssistant:
 
     def __init__(self):
         logger.info("🏥 Initializing CDSS...")
+
+        if not API_KEY:
+            raise EnvironmentError(
+                "TYPHOON_API_KEY is not set. "
+                "Please add it to your .env file (local) or HuggingFace Spaces Secrets (cloud)."
+            )
+
         self.llm = ChatOpenAI(
             api_key=API_KEY,
             base_url=BASE_URL,
