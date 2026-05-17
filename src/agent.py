@@ -248,15 +248,25 @@ def _is_supported(name: str) -> bool:
 
 # Clinical symptom keywords — query must contain at least one to be valid for search_symptoms
 SYMPTOM_KEYWORDS = {
-    # Thai
+    # Thai symptoms
     "ไข้", "ปวด", "คัน", "บวม", "ผื่น", "ไอ", "เจ็บ", "หนาว", "สั่น", "เหนื่อย",
     "อ่อนเพลีย", "คลื่นไส้", "อาเจียน", "ท้องเสีย", "ท้องผูก", "หายใจ", "แน่น",
-    "ชา", "เวียน", "หัว", "ตา", "หู", "จมูก", "คอ", "หลัง", "ท้อง", "ขา", "แขน",
+    "ชา", "เวียน", "ตา", "หู", "จมูก", "คอ", "หลัง", "ท้อง", "ขา", "แขน",
     "ปัสสาวะ", "อุจจาระ", "เลือด", "น้ำมูก", "เสมหะ", "ผิว", "ตุ่ม", "แผล",
-    # English
+    "กระหาย", "หิว", "อ่อนแรง", "ชาที่", "มองเห็น", "ปวดหัว", "ปวดท้อง",
+    # English symptoms
     "fever", "pain", "ache", "rash", "cough", "itch", "swell", "nausea", "vomit",
     "diarrhea", "fatigue", "dizzy", "bleed", "discharge", "sore", "stiff", "numb",
     "breathe", "chest", "headache", "stomach", "urine", "skin", "spot", "blister",
+    "thirst", "hunger", "weakness", "vision", "sweat", "chills", "sneeze",
+}
+
+# Thai disease names — if query contains these, it's a get_condition_details query, not search_symptoms
+DISEASE_TH_NAMES = {
+    "ไข้เลือดออก", "ไข้ไทฟอยด์", "ปอดอักเสบ", "เบาหวาน", "ไมเกรน", "มาลาเรีย",
+    "ภูมิแพ้", "หวัด", "ข้ออักเสบ", "ความดัน", "กรดไหลย้อน", "สะเก็ดเงิน",
+    "ดีซ่าน", "อีสุกอีใส", "ตับอักเสบ", "หอบหืด", "เส้นเลือดขอด", "พุพอง",
+    "กระดูกคอเสื่อม", "แพ้ยา", "เชื้อรา", "ติดเชื้อ",
 }
 
 
@@ -362,13 +372,20 @@ class MedicalSymptomAssistant:
             )
 
         # Python-level guard: search_symptoms requires at least one clinical symptom keyword
-        # This catches vague queries like "อาการโรคผอม" that slip past the LLM router
-        if tool_name == "search_symptoms" and not _has_clinical_symptoms(original):
-            logger.info(f"NO SYMPTOM KEYWORDS found in: '{original}' — rejecting")
-            return (
-                "ขออภัยครับ ไม่พบอาการทางคลินิกที่ชัดเจนในคำถามของคุณ "
-                "กรุณาอธิบายอาการทางกายภาพให้ชัดเจนขึ้น เช่น มีไข้ ปวดหัว ไอ ผื่นขึ้น บวม ฯลฯ"
-            )
+        # Skip this guard if query contains a Thai disease name (should have been routed to get_condition_details)
+        if tool_name == "search_symptoms":
+            has_disease_name = any(d in original for d in DISEASE_TH_NAMES)
+            if has_disease_name:
+                # Re-route to get_condition_details
+                logger.info(f"RE-ROUTE: disease name detected in '{original}' → get_condition_details")
+                tool_name = "get_condition_details"
+                tool_input = {"condition_name": user_input}
+            elif not _has_clinical_symptoms(original):
+                logger.info(f"NO SYMPTOM KEYWORDS found in: '{original}' — rejecting")
+                return (
+                    "ขออภัยครับ ไม่พบอาการทางคลินิกที่ชัดเจนในคำถามของคุณ "
+                    "กรุณาอธิบายอาการทางกายภาพให้ชัดเจนขึ้น เช่น มีไข้ ปวดหัว ไอ ผื่นขึ้น บวม ฯลฯ"
+                )
 
         # 3. Whitelist guard for get_condition_details
         if tool_name == "get_condition_details":
