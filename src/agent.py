@@ -464,6 +464,7 @@ class MedicalSymptomAssistant:
             else:
                 # Use original Thai text for RAG — bge-m3 handles Thai directly
                 tool_input = {"symptoms": original}
+                logger.info(f"RAG INPUT (Thai): {original}")
 
         # 3. Whitelist guard for get_condition_details
         if tool_name == "get_condition_details":
