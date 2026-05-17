@@ -80,9 +80,10 @@ class MedicalSymptomAssistant:
         prompt = f"""Analyze the user query and select the best medical tool.
 
 **STRICT RULES FOR TOOL SELECTION:**
-1. If the input is conversational (hello, how are you), a greeting, a goodbye, a joke, a test phrase, or ANYTHING other than a clear description of a medical symptom, you MUST select 'none'.
-2. Select 'search_symptoms' ONLY if the user describes actual physical or mental symptoms (e.g., "I have a headache", "My stomach hurts").
-3. Select 'none' if the query is vague, extremely short (like a single non-medical word), or unrelated to a specific health concern.
+1. Select 'get_condition_details' if the user asks for details, information, explanation, or knowledge about a specific disease or medical condition (e.g., "Tell me about pneumonia", "details of dengue").
+2. Select 'get_warning_signs' if the user asks for warning signs, danger signs, critical symptoms, or emergency indicators of a disease (e.g., "dengue warning signs", "emergency symptoms of asthma").
+3. Select 'search_symptoms' if the user describes physical or mental symptoms they/a patient are experiencing (e.g., "I have a headache", "cough and fever").
+4. Select 'none' ONLY if the input is a greeting, goodbye, general conversation, joke, or anything completely unrelated to medical/clinical topics.
 
 User Query: {user_input}
 
@@ -100,8 +101,8 @@ Output ONLY the tool name and its single most important argument in JSON format:
             import json
             import re
             
-            # Extract JSON from response
-            match = re.search(r'\{.*\}', response.content)
+            # Extract JSON from response (handling multi-line strings via re.DOTALL)
+            match = re.search(r'\{.*\}', response.content, re.DOTALL)
             if match:
                 data = json.loads(match.group())
                 tool = data.get('tool', 'search_symptoms')
@@ -134,7 +135,6 @@ Output ONLY the tool name and its single most important argument in JSON format:
             # Step 2: Translate to English for better RAG if it's Thai
             if is_thai:
                 logger.info("🌐 Translating Thai to Eng")
-                # Removed 'medical query' assumption so it translates conversational phrases naturally
                 trans_prompt = f"Translate the following Thai text to English. Output ONLY the exact translation without any explanation or added context: {user_input}"
                 user_input = self.llm.invoke([HumanMessage(content=trans_prompt)]).content
                 logger.info(f"📥 Translated Query: {user_input}")
@@ -157,8 +157,35 @@ Output ONLY the tool name and its single most important argument in JSON format:
             # Step 5: Generate natural language response
             logger.info("💭 Generating response with LLM...")
             
-            # Use original input language for response
-            prompt = f"""คุณคือผู้ช่วยตัดสินใจทางคลินิก (Clinical Decision Support Assistant)
+            # Tailor prompt based on active tool to avoid confusing the LLM and forcing a Top 3 table layout
+            if tool_name == 'get_condition_details':
+                prompt = f"""คุณคือผู้ช่วยตัดสินใจทางคลินิก (Clinical Decision Support Assistant)
+ความต้องการของผู้ใช้: "{original_input}"
+
+ข้อมูลอ้างอิงจากฐานข้อมูล (RAG):
+{tool_result}
+
+คำสั่งและกฎเหล็กในการสร้างรายงาน:
+1. นำเสนอข้อมูลรายละเอียดเชิงลึกของโรคที่ผู้ใช้สอบถามโดยอิงตามข้อมูลจากฐานข้อมูลทางการแพทย์ที่ให้มาเท่านั้น ห้ามแต่งข้อมูลขึ้นมาเองเด็ดขาด
+2. เขียนอธิบายแบ่งเป็นหัวข้อ เช่น คำจำกัดความ, อาการแสดงหลัก, และแนวทางการรักษา ให้ชัดเจน เข้าใจง่าย และเป็นภาษาไทยทางการแพทย์ที่สระสลวย
+3. **CRITICAL LANGUAGE RULE**: You MUST output the ENTIRE response STRICTLY and EXCLUSIVELY in the THAI LANGUAGE (ภาษาไทย). Under NO circumstances are you allowed to output any Chinese (中文) or other languages. Think and write ONLY in Thai.
+"""
+            elif tool_name == 'get_warning_signs':
+                prompt = f"""คุณคือผู้ช่วยตัดสินใจทางคลินิก (Clinical Decision Support Assistant)
+ความต้องการของผู้ใช้: "{original_input}"
+
+ข้อมูลอ้างอิงจากฐานข้อมูล (RAG):
+{tool_result}
+
+คำสั่งและกฎเหล็กในการสร้างรายงาน:
+1. สรุปสัญญาณเตือนอันตราย (Warning Signs) หรือข้อบ่งชี้วิกฤตของโรคที่ระบุเพื่อแจ้งผู้ป่วยหรือทีมแพทย์
+2. แสดงผลเป็นข้อๆ อย่างชัดเจน และให้ใช้ไอคอนเตือนภัย (เช่น ⚠️ หรือ 🚨) นำหน้าเพื่อดึงดูดสายตาให้อ่านง่ายและตื่นตัว
+3. อ้างอิงข้อมูลจาก RAG ที่ให้มาเท่านั้น ห้ามแต่งเติมอาการวิกฤตเพิ่มขึ้นมาเองเด็ดขาด
+4. **CRITICAL LANGUAGE RULE**: You MUST output the ENTIRE response STRICTLY and EXCLUSIVELY in the THAI LANGUAGE (ภาษาไทย). Under NO circumstances are you allowed to output any Chinese (中文) or other languages. Think and write ONLY in Thai.
+"""
+            else:
+                # Differential Diagnosis (search_symptoms)
+                prompt = f"""คุณคือผู้ช่วยตัดสินใจทางคลินิก (Clinical Decision Support Assistant)
 อาการของผู้ป่วย: "{original_input}"
 
 ข้อมูลอ้างอิงจากฐานข้อมูล (RAG):
