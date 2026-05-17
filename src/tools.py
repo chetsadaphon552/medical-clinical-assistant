@@ -186,7 +186,33 @@ def get_condition_details(condition_name: str) -> str:
                 })
     
     if not condition_chunks:
-        return f"ไม่พบข้อมูลของโรค '{condition_name}' ในฐานข้อมูล กรุณาตรวจสอบชื่อโรคหรือลองใช้ชื่อภาษาอังกฤษ"
+        return f"""❌ ไม่พบข้อมูลของโรค '{condition_name}' ในฐานข้อมูล
+
+ระบบรองรับเฉพาะ 22 โรคต่อไปนี้:
+1. Cervical Spondylosis (โรคกระดูกคอเสื่อม)
+2. Impetigo (โรคพุพอง)
+3. Urinary Tract Infection (โรคติดเชื้อทางเดินปัสสาวะ)
+4. Arthritis (โรคข้ออักเสบ)
+5. Dengue (ไข้เลือดออก)
+6. Common Cold (หวัดทั่วไป)
+7. Drug Reaction (การแพ้ยา)
+8. Fungal Infection (การติดเชื้อเชื้อรา)
+9. Malaria (มาลาเรีย)
+10. Allergy (ภูมิแพ้)
+11. Bronchial Asthma (โรคหอบหืด)
+12. Varicose Veins (เส้นเลือดขอด)
+13. Migraine (ไมเกรน)
+14. Hypertension (โรคความดันโลหิตสูง)
+15. Gastroesophageal Reflux Disease (โรคกรดไหลย้อน)
+16. Pneumonia (ปอดอักเสบ)
+17. Psoriasis (โรคสะเก็ดเงิน)
+18. Diabetes (เบาหวาน)
+19. Jaundice (ดีซ่าน)
+20. Chicken Pox (โรคอีสุกอีใส)
+21. Typhoid (ไข้ไทฟอยด์)
+22. Hepatitis A (โรคตับอักเสบ เอ)
+
+กรุณาเลือกโรคจากรายการข้างต้น หรือลองอธิบายอาการแทนเพื่อให้ระบบช่วยวิเคราะห์"""
     
     # Sort by similarity (highest first)
     condition_chunks = sorted(condition_chunks, key=lambda x: x['similarity'], reverse=True)
