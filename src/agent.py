@@ -8,7 +8,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
-from src.tools import search_symptoms, get_condition_details, get_warning_signs
+from src.tools import search_symptoms, get_condition_details
 
 # Load environment variables
 load_dotenv()
@@ -75,11 +75,10 @@ class MedicalSymptomAssistant:
 """)
         logger.info(f"✅ LLM initialized: {QWEN_MODEL} via API")
         
-        # Available tools
+        # Available tools (Simplified to 2 key clinical tools)
         self.tools = {
             'search_symptoms': search_symptoms,
-            'get_condition_details': get_condition_details,
-            'get_warning_signs': get_warning_signs
+            'get_condition_details': get_condition_details
         }
         logger.info(f"✅ Loaded {len(self.tools)} tools")
 
@@ -89,18 +88,16 @@ class MedicalSymptomAssistant:
         prompt = f"""Analyze the user query and select the best medical tool.
 
 **STRICT RULES FOR TOOL SELECTION:**
-1. Select 'get_condition_details' if the user asks for details, information, explanation, or knowledge about a specific disease or medical condition (e.g., "Tell me about pneumonia", "details of dengue").
-2. Select 'get_warning_signs' if the user asks for warning signs, danger signs, critical symptoms, or emergency indicators of a disease (e.g., "dengue warning signs", "emergency symptoms of asthma").
-3. Select 'search_symptoms' if the user describes physical or mental symptoms they/a patient are experiencing (e.g., "I have a headache", "cough and fever").
-4. Select 'none' ONLY if the input is a greeting, goodbye, general conversation, joke, or anything completely unrelated to medical/clinical topics.
+1. Select 'get_condition_details' if the user asks for details, explanation, knowledge, warning signs, or general information about a specific disease (e.g., "Tell me about pneumonia", "warning signs of dengue", "asthma details").
+2. Select 'search_symptoms' if the user describes actual physical or mental symptoms they/a patient are experiencing (e.g., "I have a headache", "cough and fever").
+3. Select 'none' ONLY if the input is a greeting, goodbye, general conversation, joke, or anything completely unrelated to medical/clinical topics.
 
 User Query: {user_input}
 
 Available Tools:
 1. 'search_symptoms': For searching possible conditions based on symptoms.
-2. 'get_condition_details': For detailed information about a specific known condition.
-3. 'get_warning_signs': For warning signs or emergency indicators of a condition.
-4. 'none': For greetings, goodbyes, general chat, tests, or non-medical topics.
+2. 'get_condition_details': For detailed information and clinical guidelines about a specific known condition.
+3. 'none': For greetings, goodbyes, general chat, tests, or non-medical topics.
 
 Output ONLY the tool name and its single most important argument in JSON format:
 {{"tool": "tool_name", "argument": "value"}}
@@ -119,8 +116,6 @@ Output ONLY the tool name and its single most important argument in JSON format:
                 
                 if tool == 'get_condition_details':
                     return 'get_condition_details', {'condition_name': arg}
-                elif tool == 'get_warning_signs':
-                    return 'get_warning_signs', {'condition_name': arg}
                 elif tool == 'none':
                     return 'none', None
                 else:
@@ -180,20 +175,7 @@ Output ONLY the tool name and its single most important argument in JSON format:
 3. **CRITICAL LANGUAGE RULE**: You MUST output the ENTIRE response STRICTLY and EXCLUSIVELY in the THAI LANGUAGE (ภาษาไทย). Under NO circumstances are you allowed to output any Chinese (中文) or other languages. Think and write ONLY in Thai.
 4. **NO CHINESE RULE**: ห้ามมีตัวอักษรจีน (Chinese Characters เช่น 丧失意识) ปรากฏออกมาเด็ดขาด หากต้องการอ้างอิงคำภาษาอังกฤษ ให้เขียนเป็นภาษาไทยคู่ภาษาอังกฤษธรรมดา เช่น หมดสติ (Loss of consciousness)
 """
-            elif tool_name == 'get_warning_signs':
-                prompt = f"""คุณคือผู้ช่วยตัดสินใจทางคลินิก (Clinical Decision Support Assistant)
-ความต้องการของผู้ใช้: "{original_input}"
 
-ข้อมูลอ้างอิงจากฐานข้อมูล (RAG):
-{tool_result}
-
-คำสั่งและกฎเหล็กในการสร้างรายงาน:
-1. สรุปสัญญาณเตือนอันตราย (Warning Signs) หรือข้อบ่งชี้วิกฤตของโรคที่ระบุเพื่อแจ้งผู้ป่วยหรือทีมแพทย์
-2. แสดงผลเป็นข้อๆ อย่างชัดเจน และให้ใช้ไอคอนเตือนภัย (เช่น ⚠️ หรือ 🚨) นำหน้าเพื่อดึงดูดสายตาให้อ่านง่ายและตื่นตัว
-3. อ้างอิงข้อมูลจาก RAG ที่ให้มาเท่านั้น ห้ามแต่งเติมอาการวิกฤตเพิ่มขึ้นมาเองเด็ดขาด
-4. **CRITICAL LANGUAGE RULE**: You MUST output the ENTIRE response STRICTLY and EXCLUSIVELY in the THAI LANGUAGE (ภาษาไทย). Under NO circumstances are you allowed to output any Chinese (中文) or other languages. Think and write ONLY in Thai.
-5. **NO CHINESE RULE**: ห้ามมีตัวอักษรจีน (Chinese Characters เช่น 丧失意识) ปรากฏออกมาเด็ดขาด หากต้องการอ้างอิงคำภาษาอังกฤษ ให้แปลเป็นภาษาไทยร่วมกับภาษาอังกฤษสากลธรรมดา เช่น เลือดออกตามไรฟัน (Bleeding gums), หมดสติ (Loss of consciousness)
-"""
             else:
                 # Differential Diagnosis (search_symptoms)
                 prompt = f"""คุณคือผู้ช่วยตัดสินใจทางคลินิก (Clinical Decision Support Assistant)
