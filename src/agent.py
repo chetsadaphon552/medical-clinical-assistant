@@ -359,7 +359,23 @@ class MedicalSymptomAssistant:
             "search_symptoms": search_symptoms,
             "get_condition_details": get_condition_details,
         }
+        self.chat_history: list = []  # stores (user_msg, assistant_msg) tuples
         logger.info(f"✅ Model: {MODEL} | Tools: {list(self.tools)}")
+
+    def clear_history(self):
+        """Clear conversation history."""
+        self.chat_history = []
+        logger.info("🗑️ Chat history cleared")
+
+    def _build_messages_with_history(self, user_prompt: str) -> list:
+        """Build message list including last 3 turns of history for multi-turn context."""
+        from langchain_core.messages import AIMessage
+        messages = [self.system_msg]
+        for user_msg, assistant_msg in self.chat_history[-3:]:
+            messages.append(HumanMessage(content=user_msg))
+            messages.append(AIMessage(content=assistant_msg))
+        messages.append(HumanMessage(content=user_prompt))
+        return messages
 
     # ------------------------------------------------------------------
     def _route(self, query: str) -> tuple[str, dict]:
@@ -477,9 +493,17 @@ class MedicalSymptomAssistant:
         else:
             user_prompt = SEARCH_SYMPTOMS_PROMPT.format(symptoms=original, rag=rag_raw)
 
-        response = self.llm.invoke([self.system_msg, HumanMessage(content=user_prompt)])
+        messages = self._build_messages_with_history(user_prompt)
+        response = self.llm.invoke(messages)
         logger.info("✅ Response generated")
-        return response.content + self._debug_tag(tool_name)
+
+        result = response.content + self._debug_tag(tool_name)
+
+        # Save to history
+        self.chat_history.append((original, response.content))
+        logger.info(f"📝 History: {len(self.chat_history)} turns")
+
+        return result
 
     # ------------------------------------------------------------------
     @staticmethod
