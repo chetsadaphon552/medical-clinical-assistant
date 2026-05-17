@@ -417,13 +417,16 @@ class MedicalSymptomAssistant:
         original = user_input
         is_thai  = bool(re.search(r"[ก-ฮ]", user_input))
 
-        # 1. Translate Thai → English for RAG
+        # With bge-m3 multilingual embedding, Thai queries match English documents directly.
+        # Translation is only needed for the tool router (English-only LLM reasoning).
         if is_thai:
-            user_input = self._translate_to_english(user_input)
-            logger.info(f"TRANSLATED: {user_input}")
+            translated = self._translate_to_english(user_input)
+            logger.info(f"TRANSLATED (for routing only): {translated}")
+        else:
+            translated = user_input
 
-        # 2. Route to tool
-        tool_name, tool_input = self._route(user_input)
+        # 2. Route to tool (use translated text for better LLM routing)
+        tool_name, tool_input = self._route(translated)
         logger.info(f"ROUTE → {tool_name} | {tool_input}")
 
         if tool_name == "none":
@@ -458,6 +461,9 @@ class MedicalSymptomAssistant:
                     "ขออภัยครับ ไม่พบอาการทางคลินิกที่ชัดเจนในคำถามของคุณ "
                     "กรุณาอธิบายอาการทางกายภาพให้ชัดเจนขึ้น เช่น มีไข้ ปวดหัว ไอ ผื่นขึ้น บวม ฯลฯ"
                 )
+            else:
+                # Use original Thai text for RAG — bge-m3 handles Thai directly
+                tool_input = {"symptoms": original}
 
         # 3. Whitelist guard for get_condition_details
         if tool_name == "get_condition_details":
