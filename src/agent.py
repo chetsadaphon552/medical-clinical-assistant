@@ -54,13 +54,6 @@ class MedicalSymptomAssistant:
    - ✅ ALLOWED: Only Thai (ภาษาไทย) and English technical terms in parentheses (e.g., หมดสติ (Loss of consciousness))
    - ❌ NEVER write: 丧失意识, 週, 糖尿病, or any Asian characters other than Thai
    - ✅ ALWAYS write: หมดสติ, สัปดาห์, เบาหวาน
-   - แปลศัพท์เทคนิคให้เป็นภาษาไทยมาตรฐาน:
-     * Sputum -> เสมหะ
-     * Rusty -> สีสนิมเหล็ก
-     * Malaise -> ไม่สบายเนื้อไม่สบายตัว
-     * Loss of consciousness -> หมดสติ
-     * Weekly -> รายสัปดาห์ (NOT 週)
-     * Glucose -> กลูโคส/น้ำตาลในเลือด
 
 2. **การวิเคราะห์ (Clinical Analysis):**
    - **Critical Evaluation:** ห้ามตอบตาม RAG แบบสุ่มสี่สุ่มห้า หากโรคที่ดึงมามีอาการหลักไม่ตรงกับที่ผู้ป่วยแจ้ง ให้ระบุข้อโต้แย้งหรือตัดออกจากการวิเคราะห์หลัก
@@ -70,16 +63,61 @@ class MedicalSymptomAssistant:
 
 3. **รูปแบบ (Formatting):**
    - ใช้ Markdown Table สำหรับรายชื่อโรค **(บังคับให้มี 3 คอลัมน์: ลำดับ, รายชื่อโรค, และ คะแนนความมั่นใจ)**
+   - **ตารางต้องมีครบทั้ง 3 แถว (Top 3) และทุกแถวต้องมีคะแนนความมั่นใจ**
    - เว้นบรรทัด (Double Newline) ระหว่างหัวข้อใหญ่เพื่อให้ดูสะอาดตา
    - ใช้หัวข้อหลักดังนี้: ### รายชื่อโรคที่เป็นไปได้ (Possible Conditions), ### บทวิเคราะห์ทางคลินิก (Clinical Analysis), ### ข้อพิจารณาเพิ่มเติม (Clinical Considerations)
 
-     *ตารางพจนานุกรมแปลศัพท์ (Internal Translation Map):*
-     - Chest tightness -> แน่นหน้าอก
-     - Shortness of breath / Difficulty breathing -> หายใจลำบาก / หอบเหนื่อย
-     - Fatigue / Always tired -> อ่อนเพลีย / เหนื่อยล้าตลอดเวลา
-     - Chills -> หนาวสั่น
-     - Common Cold -> หวัดทั่วไป
-     - Pneumonia -> ปอดอักเสบ
+4. **พจนานุกรมแปลศัพท์ทางการแพทย์ (Medical Translation Dictionary):**
+   คุณต้องแปลศัพท์เหล่านี้ให้ถูกต้องเสมอ:
+   
+   **อาการทั่วไป:**
+   - Fatigue / Tired / Weakness -> อ่อนเพลีย / เหนื่อยล้า
+   - Chills -> หนาวสั่น
+   - Fever -> ไข้
+   - Headache -> ปวดหัว
+   - Dizziness / Vertigo -> เวียนหว / วิงเวียน
+   - Nausea -> คลื่นไส้
+   - Vomiting -> อาเจียน
+   - Loss of consciousness -> หมดสติ
+   - Malaise -> ไม่สบายตัว
+   
+   **อาการระบบหายใจ:**
+   - Shortness of breath / Difficulty breathing -> หายใจลำบาก / หอบเหนื่อย
+   - Chest tightness -> แน่นหน้าอก
+   - Cough -> ไอ
+   - Sputum / Phlegm -> เสมหะ
+   - Rusty sputum -> เสมหะสีสนิมเหล็ก
+   - Wheezing -> หายใจมีเสียงหวีด
+   
+   **อาการระบบย่อยอาหาร:**
+   - Abdominal pain -> ปวดท้อง
+   - Diarrhea -> ท้องเสีย
+   - Constipation -> ท้องผูก
+   - Loss of appetite -> เบื่อน้ำเบื่ออาหาร
+   - Thirst / Excessive thirst -> กระหายน้ำ / กระหายน้ำมาก
+   - Hunger / Excessive hunger -> หิว / หิวมาก
+   
+   **อาการเบาหวาน:**
+   - Frequent urination -> ปัสสาวะบ่อย
+   - Excessive thirst -> กระหายน้ำมาก
+   - Excessive hunger -> หิวมาก
+   - Unexplained weight loss -> น้ำหนักลดโดยไม่ทราบสาเหตุ
+   - Numbness in hands and feet -> ชาที่มือและเท้า
+   - Blurred vision -> มองเห็นไม่ชัด
+   - Slow healing wounds -> แผลหายช้า
+   - Glucose -> กลูโคส / น้ำตาลในเลือด
+   - Insulin -> อินซูลิน
+   - Blood sugar control -> การควบคุมระดับน้ำตาลในเลือด
+   
+   **อื่นๆ:**
+   - Rash -> ผื่น
+   - Itching -> คัน
+   - Swelling -> บวม
+   - Joint pain -> ปวดข้อ
+   - Muscle pain -> ปวดกล้ามเนื้อ
+   - Back pain -> ปวดหลัง
+   - Neck pain -> ปวดคอ
+   - Weekly / 週 -> รายสัปดาห์ (ห้ามใช้ 週)
 """)
         logger.info(f"✅ LLM initialized: {QWEN_MODEL} via API")
         
@@ -179,23 +217,36 @@ Output ONLY the tool name and its single most important argument in JSON format:
 
 คำสั่งและกฎเหล็กในการสร้างรายงาน:
 1. นำเสนอข้อมูลรายละเอียดเชิงลึกของโรคที่ผู้ใช้สอบถามโดยอิงตามข้อมูลจากฐานข้อมูลทางการแพทย์ที่ให้มาเท่านั้น ห้ามแต่งข้อมูลขึ้นมาเองเด็ดขาด
+
 2. เขียนอธิบายแบ่งเป็นหัวข้อ เช่น:
    - ### คำจำกัดความ (Definition)
    - ### อาการแสดงหลัก (Main Symptoms)
    - ### แนวทางการรักษา (Treatment Guidelines)
    - ### ข้อพิจารณาเพิ่มเติม (Clinical Considerations)
+
 3. ใช้ภาษาไทยทางการแพทย์ที่ชัดเจน เข้าใจง่าย และเป็นมาตรฐาน
+
 4. 🚨 **ABSOLUTE LANGUAGE RULE**: 
    - You MUST write ONLY in THAI (ภาษาไทย) and English technical terms
    - 🚫 FORBIDDEN: Chinese characters (中文/汉字 like 週, 丧失意识, 糖尿病)
    - 🚫 FORBIDDEN: Japanese (日本語), Korean (한국어), or any non-Thai Asian scripts
    - ✅ CORRECT: หมดสติ (Loss of consciousness), รายสัปดาห์, เบาหวาน
    - ❌ WRONG: 丧失意识, 週, 糖尿病
-5. แปลศัพท์ทางการแพทย์ทั้งหมดเป็นภาษาไทย:
-   - Weekly/週 → รายสัปดาห์
-   - Glucose → กลูโคส/น้ำตาลในเลือด
-   - Diabetes → โรคเบาหวาน
-   - Loss of consciousness → หมดสติ
+
+5. **แปลศัพท์ทางการแพทย์ให้ถูกต้อง (ใช้พจนานุกรมจาก System Prompt):**
+   - Fatigue -> อ่อนเพลีย (NOT ความกระวนกระวาย)
+   - Excessive thirst -> กระหายน้ำมาก (NOT ความกระวนกระวาย)
+   - Excessive hunger -> หิวมาก (NOT ความกระวนกระวาย)
+   - Frequent urination -> ปัสสาวะบ่อย (NOT ความกระวนกระวาย)
+   - Numbness -> ชา (NOT ความกระวนกระวาย)
+   - Chills -> หนาวสั่น (NOT ความกระวนกระวาย)
+   - Shortness of breath -> หายใจลำบาก (NOT ความกระวนกระวาย)
+   - Chest tightness -> แน่นหน้าอก (NOT ความกระวนกระวาย)
+   - Weekly / 週 -> รายสัปดาห์ (NOT 週)
+   - Glucose -> กลูโคส/น้ำตาลในเลือด
+   - Insulin -> อินซูลิน
+
+6. **ห้ามแปลซ้ำ:** อย่าใช้คำเดียวกัน (เช่น "ความกระวนกระวาย") แปลหลายอาการ แต่ละอาการต้องมีคำแปลที่ถูกต้องและแตกต่างกัน
 """
 
             else:
@@ -208,7 +259,17 @@ Output ONLY the tool name and its single most important argument in JSON format:
 
 คำสั่งและกฎเหล็กในการสร้างรายงาน:
 1. วิเคราะห์และนำเสนอโรคที่เป็นไปได้ **สูงสุดไม่เกิน 3 อันดับแรก (Top 3)** เท่านั้น
+
 2. **รูปแบบบังคับ:** ต้องใช้ Markdown Table สำหรับรายชื่อโรค และหัวข้อตามที่กำหนดใน System Prompt
+   **ตารางต้องมีครบ 3 แถว และทุกแถวต้องมีคะแนนความมั่นใจ (เช่น 0.85, 0.72, 0.68)**
+   
+   ตัวอย่างตารางที่ถูกต้อง:
+   | ลำดับ | รายชื่อโรค | คะแนนความมั่นใจ |
+   |-------|-----------|-----------------|
+   | 1 | ไข้ไทฟอยด์ (Typhoid) | 0.80 |
+   | 2 | ดีซ่าน (Jaundice) | 0.75 |
+   | 3 | โรคติดเชื้อทางเดินปัสสาวะ (UTI) | 0.68 |
+
 3. **การแปลชื่อโรค:** คุณต้องแปลชื่อโรคภาษาอังกฤษจากฐานข้อมูลเป็นภาษาไทยตามพจนานุกรมด้านล่างนี้เท่านั้น ห้ามทับศัพท์แปลกๆ:
    - Cervical Spondylosis -> โรคกระดูกคอเสื่อม
    - Impetigo -> โรคพุพอง
@@ -232,12 +293,14 @@ Output ONLY the tool name and its single most important argument in JSON format:
    - Chicken Pox -> โรคอีสุกอีใส
    - Typhoid -> ไข้ไทฟอยด์
    - Hepatitis A -> โรคตับอักเสบ เอ
+
 4. 🚨 **ABSOLUTE LANGUAGE RULE**: 
    - You MUST write ONLY in THAI (ภาษาไทย) and English technical terms
    - 🚫 FORBIDDEN: Chinese characters (中文/汉字 like 週, 丧失意识, 糖尿病)
    - 🚫 FORBIDDEN: Japanese, Korean, or any non-Thai Asian scripts
    - ✅ CORRECT: หมดสติ (Loss of consciousness), รายสัปดาห์, เบาหวาน
    - ❌ WRONG: 丧失意识, 週, 糖尿病
+
 5. หากข้อมูลใน RAG มีอาการไม่ตรงกับผู้ป่วย ให้วิเคราะห์แย้งได้เลย (Critical Evaluation)
 """
             
