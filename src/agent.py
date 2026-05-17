@@ -17,8 +17,16 @@ QWEN_API_KEY = os.getenv("QWEN_API_KEY")
 QWEN_MODEL = os.getenv("QWEN_MODEL", "qwen2.5-omni-7b")
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure logging to write to both stdout (for Hugging Face Spaces logs) and logs/agent.log (for Streamlit log viewer)
+os.makedirs("logs", exist_ok=True)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("logs/agent.log", encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
 logger = logging.getLogger("medical_assistant")
 
 class MedicalSymptomAssistant:
@@ -43,7 +51,8 @@ class MedicalSymptomAssistant:
 1. **ภาษา (Language):** 
    - CRITICAL RULE: You MUST output the ENTIRE response STRICTLY and EXCLUSIVELY in the THAI LANGUAGE (ภาษาไทย). 
    - Under NO circumstances are you allowed to output any Chinese (中文) or other languages. Think and write ONLY in Thai.
-   - แปลศัพท์เทคนิคให้เป็นภาษาไทยมาตรฐาน (เช่น Sputum -> เสมหะ, Rusty -> สีสนิมเหล็ก, Malaise -> ไม่สบายเนื้อไม่สบายตัว)
+   - ห้ามมีตัวอักษรภาษาจีนหรือคำศัพท์จีนหลุดออกมาในผลลัพธ์โดยเด็ดขาด!
+   - แปลศัพท์เทคนิคให้เป็นภาษาไทยมาตรฐาน (เช่น Sputum -> เสมหะ, Rusty -> สีสนิมเหล็ก, Malaise -> ไม่สบายเนื้อไม่สบายตัว, Loss of consciousness -> หมดสติ)
 
 2. **การวิเคราะห์ (Clinical Analysis):**
    - **Critical Evaluation:** ห้ามตอบตาม RAG แบบสุ่มสี่สุ่มห้า หากโรคที่ดึงมามีอาการหลักไม่ตรงกับที่ผู้ป่วยแจ้ง (เช่น RAG บอกว่ามีจามในโรคแพ้ยา แต่ผู้ป่วยไม่ได้แจ้งประวัติการใช้ยา) ให้ AI ระบุข้อโต้แย้งหรือตัดออกจากการวิเคราะห์หลัก
@@ -56,13 +65,13 @@ class MedicalSymptomAssistant:
    - เว้นบรรทัด (Double Newline) ระหว่างหัวข้อใหญ่เพื่อให้ดูสะอาดตา
    - ใช้หัวข้อหลักดังนี้: ### รายชื่อโรคที่เป็นไปได้ (Possible Conditions), ### บทวิเคราะห์ทางคลินิก (Clinical Analysis), ### ข้อพิจารณาเพิ่มเติม (Clinical Considerations)
 
-    *ตารางพจนานุกรมแปลศัพท์ (Internal Translation Map):*
-    - Chest tightness -> แน่นหน้าอก
-    - Shortness of breath / Difficulty breathing -> หายใจลำบาก / หอบเหนื่อย
-    - Fatigue / Always tired -> อ่อนเพลีย / เหนื่อยล้าตลอดเวลา
-    - Chills -> หนาวสั่น
-    - Common Cold -> หวัดทั่วไป
-    - Pneumonia -> ปอดอักเสบ
+     *ตารางพจนานุกรมแปลศัพท์ (Internal Translation Map):*
+     - Chest tightness -> แน่นหน้าอก
+     - Shortness of breath / Difficulty breathing -> หายใจลำบาก / หอบเหนื่อย
+     - Fatigue / Always tired -> อ่อนเพลีย / เหนื่อยล้าตลอดเวลา
+     - Chills -> หนาวสั่น
+     - Common Cold -> หวัดทั่วไป
+     - Pneumonia -> ปอดอักเสบ
 """)
         logger.info(f"✅ LLM initialized: {QWEN_MODEL} via API")
         
@@ -169,6 +178,7 @@ Output ONLY the tool name and its single most important argument in JSON format:
 1. นำเสนอข้อมูลรายละเอียดเชิงลึกของโรคที่ผู้ใช้สอบถามโดยอิงตามข้อมูลจากฐานข้อมูลทางการแพทย์ที่ให้มาเท่านั้น ห้ามแต่งข้อมูลขึ้นมาเองเด็ดขาด
 2. เขียนอธิบายแบ่งเป็นหัวข้อ เช่น คำจำกัดความ, อาการแสดงหลัก, และแนวทางการรักษา ให้ชัดเจน เข้าใจง่าย และเป็นภาษาไทยทางการแพทย์ที่สระสลวย
 3. **CRITICAL LANGUAGE RULE**: You MUST output the ENTIRE response STRICTLY and EXCLUSIVELY in the THAI LANGUAGE (ภาษาไทย). Under NO circumstances are you allowed to output any Chinese (中文) or other languages. Think and write ONLY in Thai.
+4. **NO CHINESE RULE**: ห้ามมีตัวอักษรจีน (Chinese Characters เช่น 丧失意识) ปรากฏออกมาเด็ดขาด หากต้องการอ้างอิงคำภาษาอังกฤษ ให้เขียนเป็นภาษาไทยคู่ภาษาอังกฤษธรรมดา เช่น หมดสติ (Loss of consciousness)
 """
             elif tool_name == 'get_warning_signs':
                 prompt = f"""คุณคือผู้ช่วยตัดสินใจทางคลินิก (Clinical Decision Support Assistant)
@@ -182,6 +192,7 @@ Output ONLY the tool name and its single most important argument in JSON format:
 2. แสดงผลเป็นข้อๆ อย่างชัดเจน และให้ใช้ไอคอนเตือนภัย (เช่น ⚠️ หรือ 🚨) นำหน้าเพื่อดึงดูดสายตาให้อ่านง่ายและตื่นตัว
 3. อ้างอิงข้อมูลจาก RAG ที่ให้มาเท่านั้น ห้ามแต่งเติมอาการวิกฤตเพิ่มขึ้นมาเองเด็ดขาด
 4. **CRITICAL LANGUAGE RULE**: You MUST output the ENTIRE response STRICTLY and EXCLUSIVELY in the THAI LANGUAGE (ภาษาไทย). Under NO circumstances are you allowed to output any Chinese (中文) or other languages. Think and write ONLY in Thai.
+5. **NO CHINESE RULE**: ห้ามมีตัวอักษรจีน (Chinese Characters เช่น 丧失意识) ปรากฏออกมาเด็ดขาด หากต้องการอ้างอิงคำภาษาอังกฤษ ให้แปลเป็นภาษาไทยร่วมกับภาษาอังกฤษสากลธรรมดา เช่น เลือดออกตามไรฟัน (Bleeding gums), หมดสติ (Loss of consciousness)
 """
             else:
                 # Differential Diagnosis (search_symptoms)
@@ -218,13 +229,17 @@ Output ONLY the tool name and its single most important argument in JSON format:
    - Typhoid -> ไข้ไทฟอยด์
    - Hepatitis A -> โรคตับอักเสบ เอ
 4. **CRITICAL LANGUAGE RULE**: You MUST output the ENTIRE response STRICTLY and EXCLUSIVELY in the THAI LANGUAGE (ภาษาไทย). Under NO circumstances are you allowed to output any Chinese (中文) or other languages. Think and write ONLY in Thai.
-5. หากข้อมูลใน RAG มีอาการไม่ตรงกับผู้ป่วย ให้วิเคราะห์แย้งได้เลย (Critical Evaluation)
+5. **NO CHINESE RULE**: ห้ามมีตัวอักษรจีน (Chinese Characters) ปรากฏออกมาเด็ดขาด หากต้องการอ้างอิงคำศัพท์ ให้แปลเป็นภาษาไทยสากลร่วมกับวงเล็บภาษาอังกฤษเท่านั้น
+6. หากข้อมูลใน RAG มีอาการไม่ตรงกับผู้ป่วย ให้วิเคราะห์แย้งได้เลย (Critical Evaluation)
 """
             
             response = self.llm.invoke([self.system_message, HumanMessage(content=prompt)])
             
             logger.info("✅ Query processed successfully")
-            return response.content
+            
+            # Append Tool used directly at the bottom of output for extreme transparency on HF interface
+            debug_info = f"\n\n---\n*⚙️ [ระบบตอบโดยเรียกใช้งานเครื่องมือ (Active Tool): **`{tool_name}`**]*"
+            return response.content + debug_info
             
         except Exception as e:
             import traceback
