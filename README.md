@@ -9,102 +9,161 @@ app_file: app.py
 pinned: false
 ---
 
-# 🏥 ระบบสนับสนุนการตัดสินใจทางคลินิก (Clinical Decision Support System - CDSS)
+# 🏥 ระบบสนับสนุนการตัดสินใจทางคลินิก (Clinical Decision Support System — CDSS)
 
-**ระบบ Agentic RAG อัจฉริยะสำหรับวิเคราะห์อาการและวินิจฉัยโรคเบื้องต้นระดับ Medical Grade**
-
----
-
-## 🌟 การอัปเดตล่าสุด (Latest Updates)
-
-- 🩺 **Professional Clinical UI**: ปรับปรุงหน้าจอ (UI) ใหม่ทั้งหมด ถอดอีโมจิและใช้โทนสี Medical Blue/Slate ให้ดูเป็นทางการระดับซอฟต์แวร์โรงพยาบาล (HIS)
-- 🛡️ **Strict Input Guardrails**: มีระบบคัดกรองคำถามที่ทรงพลัง หากผู้ป่วยพิมพ์คำทักทาย ลาก่อน มุกตลก หรือคำถามที่ไม่มีอาการเจ็บป่วย AI จะปฏิเสธการวิเคราะห์ทันที
-- 🧠 **Critical Evaluation (Anti-Hallucination)**: AI มีระบบ "นักสืบ" ที่คอยโต้แย้งข้อมูลจาก RAG หากฐานข้อมูลดึงโรคที่ไม่สอดคล้องกับอาการของผู้ป่วยขึ้นมา AI จะระบุข้อควรระวังและลดความน่าเชื่อถือของโรคนั้นลง
-- 🇹🇭 **100% Thai Medical Dictionary**: บังคับแปลชื่อโรคและศัพท์ทางการแพทย์เป็นภาษาไทยเป๊ะๆ ตามพจนานุกรม 22 โรคที่ฝังอยู่ในระบบ ป้องกันการแปลทับศัพท์แปลกๆ (เช่น Dengue -> ไข้เลือดออก)
-- 📊 **Strict Top-3 Formatting**: บังคับให้ AI แสดงผลเฉพาะ **3 อันดับโรคที่เป็นไปได้สูงสุด** ในรูปแบบ Markdown Table ที่สะอาดตาและอ่านง่าย
-
-## 📚 ฐานข้อมูลโรค (Supported Conditions)
-ระบบนี้รองรับการวิเคราะห์อาการจากฐานข้อมูลทั้งหมด **22 โรค** ครอบคลุมตั้งแต่หวัดทั่วไป ภูมิแพ้ ปอดอักเสบ ไข้เลือดออก ไปจนถึงเบาหวาน
-👉 [ดูรายชื่อโรคทั้งหมดที่นี่ (DISEASE_LIST.md)](./DISEASE_LIST.md)
-
-## 🛠️ เทคโนโลยีที่ใช้ (Tech Stack)
-
-- **LLM**: Qwen2.5-Omni-7B (ผ่าน DashScope API)
-- **Framework**: LangChain 
-- **Vector Database**: FAISS (Facebook AI Similarity Search)
-- **Embeddings**: BAAI/bge-base-en-v1.5
-- **UI**: Streamlit
-- **Deployment**: Docker Compose & Hugging Face Spaces
+**ระบบ Agentic RAG สำหรับวิเคราะห์อาการและวินิจฉัยโรคเบื้องต้น พัฒนาด้วย Typhoon LLM และ FAISS Vector Database**
 
 ---
 
-## 📂 โครงสร้างโปรเจกต์ (Project Structure)
-```text
-medical-symptom-assistant/
-├── app.py                  # หน้าเว็บ UI หลัก (Streamlit)
-├── api.py                  # ระบบ REST API (FastAPI) สำหรับเรียกผ่าน cURL/Postman
-├── compare_models.py       # สคริปต์ A/B Testing สำหรับเปรียบเทียบโมเดล Embedding
-├── DISEASE_LIST.md         # พจนานุกรมรายชื่อโรค 22 โรคที่รองรับ
-├── docker-compose.yml      # ไฟล์ตั้งค่า Docker Compose สำหรับรันบน Server
-├── Dockerfile              # ไฟล์สำหรับสร้าง Docker Image
-├── requirements.txt        # รายการไลบรารีที่ต้องใช้
-├── .env                    # (คุณต้องสร้างเอง) ไฟล์เก็บรหัส QWEN_API_KEY
-├── data/
-│   ├── raw/                # ข้อมูลดิบ (Dataset)
-│   ├── processed/          # ข้อมูลที่ผ่านการจัดเตรียม (documents.json)
-│   └── vectordb/           # ฐานข้อมูล Vector (FAISS Index)
-└── src/
-    ├── agent.py            # หัวสมองหลัก (LLM Logic, Translation, System Prompts)
-    ├── tools.py            # เครื่องมือของ AI (Vector Search, FAISS Retrieval)
-    └── setup_vectordb.py   # สคริปต์หั่น Chunk และสร้างฐานข้อมูลเวกเตอร์
+## ✨ ความสามารถหลัก
+
+- 🔍 **Differential Diagnosis** — วิเคราะห์อาการและแสดง Top 3 โรคที่เป็นไปได้ พร้อม Confidence Score
+- � **Condition Lookup** — ดูรายละเอียดอาการของโรคเฉพาะจากฐานข้อมูล
+- 🧠 **Critical Evaluation** — AI โต้แย้งข้อมูลจาก RAG หากโรคที่ดึงมาไม่สอดคล้องกับอาการจริง
+- 🛡️ **Input Guardrails** — ปฏิเสธคำถามที่ไม่เกี่ยวกับการแพทย์ และโรคนอกฐานข้อมูล 22 โรค
+- 💬 **Multi-turn Chat** — จำบริบทการสนทนาได้ สามารถถามต่อเนื่องได้
+- 🇹🇭 **ภาษาไทย 100%** — รองรับทั้งภาษาไทยและอังกฤษ ตอบกลับเป็นภาษาไทยเสมอ
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| LLM | Typhoon v2.5 30B (`typhoon-v2.5-30b-a3b-instruct`) by SCB 10X |
+| Agent Framework | LangChain |
+| Vector Database | FAISS (Facebook AI Similarity Search) |
+| Embedding Model | `BAAI/bge-base-en-v1.5` (768 dims, Cosine Similarity) |
+| UI | Streamlit |
+| Deployment | Docker Compose & Hugging Face Spaces |
+
+---
+
+## 🏗️ System Architecture
+
+```
+User Input (Thai/English)
+        │
+        ▼
+┌───────────────────┐
+│   Translation     │  Thai → English (for routing only)
+│   (Typhoon LLM)   │
+└────────┬──────────┘
+         │
+         ▼
+┌───────────────────┐
+│   Tool Router     │  Intent classification
+│   (Typhoon LLM)   │
+└────────┬──────────┘
+         │
+    ┌────┴────┐
+    ▼         ▼
+Tool 1     Tool 2
+search_    get_condition
+symptoms   _details
+    │         │
+    └────┬────┘
+         ▼
+┌─────────────────┐
+│  FAISS Vector   │
+│  Database       │
+│  486 chunks     │
+│  22 diseases    │
+└─────────────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Response        │
+│ Generation      │
+│ (Typhoon LLM)   │
+└─────────────────┘
 ```
 
-## 🚀 การติดตั้งและใช้งาน (Installation & Usage)
+---
 
-### 1. ใช้งานผ่าน Web UI (Streamlit)
-**รันบนเครื่อง Local:**
+## 🔧 Agent Tools
+
+### Tool 1: `search_symptoms`
+ค้นหาโรคที่เป็นไปได้จากอาการที่ผู้ป่วยรายงาน
+```
+Input : "มีไข้สูง ปวดหัว ผื่นขึ้น"
+Output: Top 3 โรค + Confidence Score + Clinical Analysis
+```
+
+### Tool 2: `get_condition_details`
+ดึงรายละเอียดทางคลินิกของโรคเฉพาะ
+```
+Input : "ไข้เลือดออก"
+Output: คำจำกัดความ + อาการแสดงหลัก
+```
+
+> 📄 ดูรายละเอียด Tools เพิ่มเติมได้ที่ [TOOLS.md](./TOOLS.md)
+
+---
+
+## 📚 ฐานข้อมูลโรค
+
+รองรับ **22 โรค** ครอบคลุมตั้งแต่หวัดทั่วไป ภูมิแพ้ ปอดอักเสบ ไข้เลือดออก ไปจนถึงเบาหวาน
+
+👉 [ดูรายชื่อโรคทั้งหมด (DISEASE_LIST.md)](./DISEASE_LIST.md)
+
+---
+
+## 📂 โครงสร้างโปรเจกต์
+
+```
+medical-symptom-assistant/
+├── app.py                  # Web UI (Streamlit) — Chat interface
+├── api.py                  # REST API (FastAPI)
+├── DISEASE_LIST.md         # รายชื่อ 22 โรคที่รองรับ
+├── TOOLS.md                # เอกสาร Agent Tools
+├── docker-compose.yml      # Docker Compose config
+├── Dockerfile              # Docker image
+├── requirements.txt        # Python dependencies
+├── data/
+│   ├── raw/                # Raw datasets
+│   ├── processed/          # documents.json
+│   └── vectordb/           # FAISS index + chunks
+└── src/
+    ├── agent.py            # CDSS Agent (routing, reasoning, response generation)
+    ├── tools.py            # RAG Tools (search_symptoms, get_condition_details)
+    └── setup_vectordb.py   # Vector store builder
+```
+
+---
+
+## 🚀 การติดตั้งและใช้งาน
+
+### Local (Streamlit)
 ```bash
 pip install -r requirements.txt
 python -m streamlit run app.py
 ```
-**รันด้วย Docker:**
+
+### Docker
 ```bash
 docker-compose up --build -d
 ```
 
-### 2. ใช้งานผ่าน REST API (FastAPI)
-หากคุณต้องการนำระบบนี้ไปเชื่อมต่อกับ Frontend อื่น หรือ LINE Chatbot คุณสามารถเปิดรันเซิร์ฟเวอร์ API ได้ด้วยคำสั่ง:
-```bash
-pip install fastapi uvicorn
-uvicorn api:app --host 0.0.0.0 --port 8000
-```
+---
 
-**ตัวอย่างการยิง cURL Command เพื่อขอรับการวิเคราะห์อาการ:**
-```bash
-curl -X 'POST' \
-  'http://localhost:8000/api/analyze' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "symptoms": "ปวดศีรษะมาก มีไข้สูง และปวดกระบอกตามา 2 วัน"
-}'
-```
+## 🔐 Environment Variables
 
-## 🔐 การตั้งค่าสภาพแวดล้อม (Environment Variables)
-สร้างไฟล์ `.env` ในโฟลเดอร์หลัก และใส่ข้อมูลดังนี้:
+สร้างไฟล์ `.env` และใส่ค่าดังนี้:
+
 ```env
-# Qwen API Settings
-QWEN_API_KEY=your_api_key_here
-QWEN_MODEL=qwen2.5-omni-7b
-QWEN_BASE_URL=https://dashscope-intl.aliyuncs.com/compatible-mode/v1
+# Typhoon API (https://opentyphoon.ai)
+TYPHOON_API_KEY=your_api_key_here
+TYPHOON_MODEL=typhoon-v2.5-30b-a3b-instruct
+TYPHOON_BASE_URL=https://api.opentyphoon.ai/v1
 
 # Embedding Model
 EMBEDDING_MODEL=BAAI/bge-base-en-v1.5
 
-# Vector DB (บังคับใช้ Path นี้)
+# Vector DB
 VECTOR_DB_PATH=data/vectordb/vector_store
 ```
 
 ---
 
-⚠️ **คำเตือน (Disclaimer)**: ระบบนี้ถูกออกแบบมาเพื่อเป็นเครื่องมือสนับสนุนการตัดสินใจเบื้องต้นเท่านั้น การวินิจฉัยขั้นสุดท้ายและการวางแผนการรักษาต้องขึ้นอยู่กับดุลยพินิจของแพทย์ผู้เชี่ยวชาญเสมอ
+> ⚠️ **Disclaimer**: ระบบนี้เป็นเครื่องมือสนับสนุนการตัดสินใจเบื้องต้นเท่านั้น การวินิจฉัยขั้นสุดท้ายต้องขึ้นอยู่กับดุลยพินิจของแพทย์ผู้เชี่ยวชาญเสมอ
