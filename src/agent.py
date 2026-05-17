@@ -237,6 +237,26 @@ def _is_supported(name: str) -> bool:
     return any(s in n or n in s for s in SUPPORTED_CONDITIONS)
 
 
+# Clinical symptom keywords — query must contain at least one to be valid for search_symptoms
+SYMPTOM_KEYWORDS = {
+    # Thai
+    "ไข้", "ปวด", "คัน", "บวม", "ผื่น", "ไอ", "เจ็บ", "หนาว", "สั่น", "เหนื่อย",
+    "อ่อนเพลีย", "คลื่นไส้", "อาเจียน", "ท้องเสีย", "ท้องผูก", "หายใจ", "แน่น",
+    "ชา", "เวียน", "หัว", "ตา", "หู", "จมูก", "คอ", "หลัง", "ท้อง", "ขา", "แขน",
+    "ปัสสาวะ", "อุจจาระ", "เลือด", "น้ำมูก", "เสมหะ", "ผิว", "ตุ่ม", "แผล",
+    # English
+    "fever", "pain", "ache", "rash", "cough", "itch", "swell", "nausea", "vomit",
+    "diarrhea", "fatigue", "dizzy", "bleed", "discharge", "sore", "stiff", "numb",
+    "breathe", "chest", "headache", "stomach", "urine", "skin", "spot", "blister",
+}
+
+
+def _has_clinical_symptoms(text: str) -> bool:
+    """Return True if text contains at least one recognizable clinical symptom keyword."""
+    text_lower = text.lower()
+    return any(kw in text_lower for kw in SYMPTOM_KEYWORDS)
+
+
 def _filter_rag_by_whitelist(rag_text: str) -> str:
     """Remove blocks for conditions not in the whitelist."""
     lines, skip = [], False
@@ -323,6 +343,15 @@ class MedicalSymptomAssistant:
             return (
                 "ขออภัยครับ ระบบนี้ออกแบบมาเพื่อสนับสนุนการตัดสินใจทางคลินิกเท่านั้น "
                 "กรุณาระบุอาการของผู้ป่วย หรือชื่อโรคที่ต้องการข้อมูลครับ"
+            )
+
+        # Python-level guard: search_symptoms requires at least one clinical symptom keyword
+        # This catches vague queries like "อาการโรคผอม" that slip past the LLM router
+        if tool_name == "search_symptoms" and not _has_clinical_symptoms(original):
+            logger.info(f"NO SYMPTOM KEYWORDS found in: '{original}' — rejecting")
+            return (
+                "ขออภัยครับ ไม่พบอาการทางคลินิกที่ชัดเจนในคำถามของคุณ "
+                "กรุณาอธิบายอาการทางกายภาพให้ชัดเจนขึ้น เช่น มีไข้ ปวดหัว ไอ ผื่นขึ้น บวม ฯลฯ"
             )
 
         # 3. Whitelist guard for get_condition_details
