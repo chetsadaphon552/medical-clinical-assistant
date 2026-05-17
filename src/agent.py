@@ -246,6 +246,51 @@ def _is_supported(name: str) -> bool:
     return any(s in n or n in s for s in SUPPORTED_CONDITIONS)
 
 
+# Thai aliases — short/informal names that map to supported conditions
+DISEASE_TH_ALIASES: dict[str, str] = {
+    "ภูมิ": "allergy",
+    "ภูมิแพ้": "allergy",
+    "หวัด": "common cold",
+    "ไข้หวัด": "common cold",
+    "ไข้เลือดออก": "dengue",
+    "เลือดออก": "dengue",
+    "มาลาเรีย": "malaria",
+    "ไข้มาลาเรีย": "malaria",
+    "ไมเกรน": "migraine",
+    "ปวดหัวไมเกรน": "migraine",
+    "เบาหวาน": "diabetes",
+    "น้ำตาล": "diabetes",
+    "ความดัน": "hypertension",
+    "ความดันโลหิต": "hypertension",
+    "ปอดอักเสบ": "pneumonia",
+    "ปอด": "pneumonia",
+    "หอบหืด": "bronchial asthma",
+    "หอบ": "bronchial asthma",
+    "หืด": "bronchial asthma",
+    "ไข้ไทฟอยด์": "typhoid",
+    "ไทฟอยด์": "typhoid",
+    "ดีซ่าน": "jaundice",
+    "ตัวเหลือง": "jaundice",
+    "ตับอักเสบ": "hepatitis a",
+    "อีสุกอีใส": "chicken pox",
+    "สุกใส": "chicken pox",
+    "สะเก็ดเงิน": "psoriasis",
+    "เส้นเลือดขอด": "varicose veins",
+    "ข้ออักเสบ": "arthritis",
+    "ข้อ": "arthritis",
+    "กรดไหลย้อน": "gastroesophageal reflux disease",
+    "กรด": "gastroesophageal reflux disease",
+    "กระดูกคอ": "cervical spondylosis",
+    "คอเสื่อม": "cervical spondylosis",
+    "พุพอง": "impetigo",
+    "ปัสสาวะ": "urinary tract infection",
+    "ทางเดินปัสสาวะ": "urinary tract infection",
+    "เชื้อรา": "fungal infection",
+    "ราที่ผิวหนัง": "fungal infection",
+    "แพ้ยา": "drug reaction",
+}
+
+
 # Clinical symptom keywords — query must contain at least one to be valid for search_symptoms
 SYMPTOM_KEYWORDS = {
     # Thai symptoms
@@ -374,12 +419,23 @@ class MedicalSymptomAssistant:
         # Python-level guard: search_symptoms requires at least one clinical symptom keyword
         # Skip this guard if query contains a Thai disease name (should have been routed to get_condition_details)
         if tool_name == "search_symptoms":
-            has_disease_name = any(d in original for d in DISEASE_TH_NAMES)
-            if has_disease_name:
-                # Re-route to get_condition_details
-                logger.info(f"RE-ROUTE: disease name detected in '{original}' → get_condition_details")
+            # Check aliases first (short/informal Thai names)
+            matched_condition = None
+            for alias, eng_name in DISEASE_TH_ALIASES.items():
+                if alias in original:
+                    matched_condition = eng_name
+                    break
+            # Also check DISEASE_TH_NAMES set
+            if not matched_condition:
+                for d in DISEASE_TH_NAMES:
+                    if d in original:
+                        matched_condition = d
+                        break
+
+            if matched_condition:
+                logger.info(f"RE-ROUTE: disease name '{matched_condition}' detected → get_condition_details")
                 tool_name = "get_condition_details"
-                tool_input = {"condition_name": user_input}
+                tool_input = {"condition_name": matched_condition}
             elif not _has_clinical_symptoms(original):
                 logger.info(f"NO SYMPTOM KEYWORDS found in: '{original}' — rejecting")
                 return (
