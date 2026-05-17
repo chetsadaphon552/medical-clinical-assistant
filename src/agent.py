@@ -144,12 +144,32 @@ class MedicalSymptomAssistant:
 
     def _select_tool(self, user_input: str) -> tuple:
         """Select appropriate tool based on user input using LLM reasoning."""
-        prompt = f"""Analyze the user query and select the best medical tool.
+        prompt = f"""You are a medical tool router. Analyze the user query and select the correct tool.
 
-STRICT RULES:
-1. 'get_condition_details' - user asks about details/symptoms/info of a SPECIFIC NAMED disease.
-2. 'search_symptoms' - user describes physical symptoms they are experiencing.
-3. 'none' - greeting, goodbye, joke, or completely non-medical topic.
+RULES (follow strictly in order):
+1. Use 'get_condition_details' when:
+   - User asks about symptoms OF a specific named disease (e.g. "symptoms of dengue", "what is malaria", "tell me about diabetes")
+   - User asks for details/info/explanation about a specific disease by name
+   - Keywords: อาการของ, อาการโรค, รายละเอียด, บอกเกี่ยวกับ, เป็นยังไง, symptoms of, tell me about, what is, details of
+
+2. Use 'search_symptoms' when:
+   - User describes symptoms they/patient are CURRENTLY EXPERIENCING
+   - No specific disease name is mentioned, only symptoms
+   - Keywords: มีไข้, ปวด, คัน, เหนื่อย, I have, I feel, patient has
+
+3. Use 'none' when:
+   - Greeting, goodbye, joke, or completely non-medical topic
+
+IMPORTANT: If the query contains a disease name AND asks about its symptoms/details → use 'get_condition_details'
+IMPORTANT: If the query only describes physical symptoms without naming a disease → use 'search_symptoms'
+
+Examples:
+- "อาการไข้เลือดออก" → get_condition_details (argument: "dengue")
+- "โรคตับอักเสบมีอาการอะไร" → get_condition_details (argument: "hepatitis a")
+- "โรคเบาหวานเป็นยังไง" → get_condition_details (argument: "diabetes")
+- "มีไข้ ปวดหัว อ่อนเพลีย" → search_symptoms
+- "ปวดขา บวม" → search_symptoms
+- "สวัสดี" → none
 
 User Query: {user_input}
 
@@ -228,7 +248,6 @@ Output ONLY JSON: {{"tool": "tool_name", "argument": "value"}}
                 filtered_lines = []
                 skip_block = False
                 for line in tool_result.split('\n'):
-                    # Detect "Condition: <name>" lines
                     cond_match = re.match(r'^Condition:\s*(.+)', line, re.IGNORECASE)
                     if cond_match:
                         cond_name = cond_match.group(1).strip()
@@ -244,6 +263,15 @@ Output ONLY JSON: {{"tool": "tool_name", "argument": "value"}}
                 if not tool_result.strip():
                     debug_info = f"\n\n---\n*⚙️ [ระบบตอบโดยเรียกใช้งานเครื่องมือ (Active Tool): **`{tool_name}`**]*"
                     return NOT_FOUND_MSG + debug_info
+
+                # Check confidence scores - reject if max score too low (non-clinical / irrelevant query)
+                scores = re.findall(r'Confidence Score:\s*([\d.]+)', tool_result)
+                if scores:
+                    max_score = max(float(s) for s in scores)
+                    if max_score < 0.62:
+                        logger.info(f"🚫 Max confidence {max_score:.2f} too low - likely non-clinical query.")
+                        debug_info = f"\n\n---\n*⚙️ [ระบบตอบโดยเรียกใช้งานเครื่องมือ (Active Tool): **`{tool_name}`**]*"
+                        return "ขออภัยครับ ไม่พบโรคในฐานข้อมูลที่สอดคล้องกับอาการที่ระบุ กรุณาอธิบายอาการทางกายภาพให้ชัดเจนขึ้น เช่น มีไข้ ปวดหัว ไอ ผื่นขึ้น ฯลฯ" + debug_info
 
             # Generate LLM response
             logger.info("💭 Generating LLM response...")
