@@ -39,7 +39,7 @@ SUPPORTED_CONDITIONS = {
     'jaundice', 'chicken pox', 'typhoid', 'hepatitis a'
 }
 
-NOT_FOUND_MSG = """❌ ไม่พบข้อมูลของโรคนี้ในฐานข้อมูล
+NOT_FOUND_MSG = """ ไม่พบข้อมูลของโรคนี้ในฐานข้อมูล
 
 ระบบรองรับเฉพาะ **22 โรค** ต่อไปนี้เท่านั้น:
 
@@ -223,6 +223,28 @@ Output ONLY JSON: {{"tool": "tool_name", "argument": "value"}}
                 debug_info = f"\n\n---\n*⚙️ [ระบบตอบโดยเรียกใช้งานเครื่องมือ (Active Tool): **`{tool_name}`**]*"
                 return tool_result + debug_info
 
+            # Post-filter search_symptoms results: remove conditions not in whitelist
+            if tool_name == 'search_symptoms':
+                filtered_lines = []
+                skip_block = False
+                for line in tool_result.split('\n'):
+                    # Detect "Condition: <name>" lines
+                    cond_match = re.match(r'^Condition:\s*(.+)', line, re.IGNORECASE)
+                    if cond_match:
+                        cond_name = cond_match.group(1).strip()
+                        if _is_supported_condition(cond_name):
+                            skip_block = False
+                            filtered_lines.append(line)
+                        else:
+                            skip_block = True
+                            logger.info(f"🚫 Filtered out unsupported condition: {cond_name}")
+                    elif not skip_block:
+                        filtered_lines.append(line)
+                tool_result = '\n'.join(filtered_lines)
+                if not tool_result.strip():
+                    debug_info = f"\n\n---\n*⚙️ [ระบบตอบโดยเรียกใช้งานเครื่องมือ (Active Tool): **`{tool_name}`**]*"
+                    return NOT_FOUND_MSG + debug_info
+
             # Generate LLM response
             logger.info("💭 Generating LLM response...")
 
@@ -252,23 +274,30 @@ Output ONLY JSON: {{"tool": "tool_name", "argument": "value"}}
 {tool_result}
 
 🚨 CRITICAL RULES:
-1. นำเสนอโรคที่เป็นไปได้ **สูงสุด 3 อันดับแรก (Top 3)** เท่านั้น
-2. ตารางบังคับ 3 คอลัมน์ ครบ 3 แถว ทุกแถวต้องมีคะแนนความมั่นใจ:
+1. นำเสนอโรคที่เป็นไปได้ **สูงสุด 3 อันดับแรก (Top 3)** เท่านั้น โดยใช้เฉพาะโรคที่มีใน RAG ข้างต้น ห้ามเพิ่มโรคอื่นเด็ดขาด
+
+2. **ตารางบังคับ** - ต้องครบ 3 แถว เรียงคะแนนจากมากไปน้อย (แถว 1 > แถว 2 > แถว 3):
    | ลำดับ | รายชื่อโรค | คะแนนความมั่นใจ |
    |-------|-----------|-----------------|
-   | 1 | ชื่อโรค (English) | 0.XX |
-   | 2 | ชื่อโรค (English) | 0.XX |
-   | 3 | ชื่อโรค (English) | 0.XX |
-3. แปลชื่อโรค: Dengue->ไข้เลือดออก, Typhoid->ไข้ไทฟอยด์, Pneumonia->ปอดอักเสบ,
-   Diabetes->โรคเบาหวาน, Migraine->ไมเกรน, Malaria->มาลาเรีย, Allergy->ภูมิแพ้,
-   Common Cold->หวัดทั่วไป, Arthritis->โรคข้ออักเสบ, Hypertension->โรคความดันโลหิตสูง,
-   Jaundice->ดีซ่าน, Chicken Pox->โรคอีสุกอีใส, Hepatitis A->โรคตับอักเสบ เอ,
-   Psoriasis->โรคสะเก็ดเงิน, Impetigo->โรคพุพอง, Bronchial Asthma->โรคหอบหืด,
-   Fungal Infection->การติดเชื้อเชื้อรา, Drug Reaction->การแพ้ยา,
-   Urinary Tract Infection->โรคติดเชื้อทางเดินปัสสาวะ, Varicose Veins->เส้นเลือดขอด,
-   Cervical Spondylosis->โรคกระดูกคอเสื่อม, Gastroesophageal Reflux Disease->โรคกรดไหลย้อน
-4. ห้ามภาษาจีน/ญี่ปุ่น/เกาหลี ใช้ภาษาไทย + อังกฤษเท่านั้น
+   | 1 | ชื่อภาษาไทย (English) | 0.XX |
+   | 2 | ชื่อภาษาไทย (English) | 0.XX |
+   | 3 | ชื่อภาษาไทย (English) | 0.XX |
+
+3. **บังคับแปลชื่อโรคเป็นภาษาไทยในตาราง** (ห้ามใส่แค่ภาษาอังกฤษ):
+   Dengue→ไข้เลือดออก, Typhoid→ไข้ไทฟอยด์, Pneumonia→ปอดอักเสบ,
+   Diabetes→โรคเบาหวาน, Migraine→ไมเกรน, Malaria→มาลาเรีย, Allergy→ภูมิแพ้,
+   Common Cold→หวัดทั่วไป, Arthritis→โรคข้ออักเสบ, Hypertension→โรคความดันโลหิตสูง,
+   Jaundice→ดีซ่าน, Chicken Pox→โรคอีสุกอีใส, Hepatitis A→โรคตับอักเสบ เอ,
+   Psoriasis→โรคสะเก็ดเงิน, Impetigo→โรคพุพอง, Bronchial Asthma→โรคหอบหืด,
+   Fungal Infection→การติดเชื้อเชื้อรา, Drug Reaction→การแพ้ยา,
+   Urinary Tract Infection→โรคติดเชื้อทางเดินปัสสาวะ, Varicose Veins→เส้นเลือดขอด,
+   Cervical Spondylosis→โรคกระดูกคอเสื่อม, Gastroesophageal Reflux Disease→โรคกรดไหลย้อน
+
+4. 🚫 ห้ามภาษาจีน/ญี่ปุ่น/เกาหลี/เวียดนาม ใช้ภาษาไทย + อังกฤษเท่านั้น
+   ห้ามใช้เครื่องหมาย 。% ที่ไม่ใช่ภาษาไทย/อังกฤษ
+
 5. หัวข้อ: ### รายชื่อโรคที่เป็นไปได้, ### บทวิเคราะห์ทางคลินิก, ### ข้อพิจารณาเพิ่มเติม
+
 6. หากอาการใน RAG ไม่ตรงกับผู้ป่วย ให้วิเคราะห์แย้งได้ (Critical Evaluation)
 """
 
