@@ -12,8 +12,9 @@ from src.tools import search_symptoms, get_condition_details
 load_dotenv()
 
 QWEN_API_KEY = os.getenv("QWEN_API_KEY")
-QWEN_MODEL = os.getenv("QWEN_MODEL", "qwen2.5-omni-7b")
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
+QWEN_MODEL = os.getenv("QWEN_MODEL", "typhoon-v2.5-30b-instruct")
+QWEN_BASE_URL = os.getenv("QWEN_BASE_URL", "https://api.opentyphoon.ai/v1")
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "BAAI/bge-base-en-v1.5")
 
 # Configure logging
 os.makedirs("logs", exist_ok=True)
@@ -92,10 +93,10 @@ class MedicalSymptomAssistant:
 
         self.llm = ChatOpenAI(
             api_key=QWEN_API_KEY,
-            base_url="https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+            base_url=QWEN_BASE_URL,
             model=QWEN_MODEL,
             temperature=0.01,
-            max_tokens=1000,
+            max_tokens=2000,
         )
 
         self.system_message = SystemMessage(content="""คุณคือ "Clinical Decision Support Assistant" ระบบวิเคราะห์อาการทางคลินิกอัจฉริยะ
